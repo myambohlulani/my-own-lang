@@ -13,7 +13,8 @@
                 <else> |
                 <break_statement> |
                 <continue_statement> |
-                <return_statement>
+                <return_statement> |
+                <function>
 
 <block> ::= "{" <statement>* "}"
 
@@ -87,7 +88,7 @@
 # ========================================================
 #               Switch Statement
 # ========================================================
-<switch> ::= "switch" "(" <expression> ")" "{"
+<switch> ::= "switch" "(" <expression> ")" ":" "do" "{"
                 <case_clause>+
             "}" "done" ";"
 
@@ -127,7 +128,16 @@
 # =========================================================
 #                       Functions
 # =========================================================
+<access_modifier> ::= "public" |
+                    "protected" |
+                    "private"
 
+<function> ::= <access_modifier> <identifier> "( <function_form> )" "->" ("null" | <data_type> ) "{"
+                <statement>*
+            "}" "done" ";"
+
+<function_form> ::= <data_type> <identifier> | "void"
+<return_type> ::= ("null" | <data_type>) | <data_type>
 
 # =========================================================
 #                       Classes
