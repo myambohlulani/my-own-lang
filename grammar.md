@@ -158,5 +158,5 @@
 
     protected will_be_inherited() -> void {
         // body
-    }
+    }****
 ```
