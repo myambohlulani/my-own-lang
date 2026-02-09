@@ -135,26 +135,26 @@
         } case (*) {
             print("This is the default statement");
         }
-    }
+    } done;
 ```
 
 ## Functions
 ```
-    public get_name() -> (string | null){
+    public get_name() -> (string | null) {
         return name;
     }
 
     public set_name(string name) -> void {
         this.name = name; // this keyword is only used in the class.
-    } done;
+    }
 
     public _value(string value) -> string {
         return "Hello, {!value := "World!"};
-    } done;
+    }
 
     private helper() -> void {
         // body
-    } done;
+    }
 
     protected will_be_inherited() -> void {
         // body
