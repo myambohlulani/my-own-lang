@@ -1,0 +1,92 @@
+i32 age = 19;
+string name = "Hlulani";
+f64 price = 100.0d;
+bool isRaining = false;
+bool isCloudy = true;
+
+if (isRaining) : then {
+    print("Today there is no rain");
+} elif (!isRaining && isCloudy) : then {
+    print("It may rain later, Who knows!");
+} else {
+    printf("Hello {name}, Today There is no rain!");
+} fi;
+
+// commenting
+# commenting too
+
+/*
+* multiple line comment
+*/
+
+/**
+* Documenting comment!
+*/
+
+// ways of creating arrays
+i32[] arr = {10, 20, 30, 40, 50};
+
+// loops
+# for each loop
+for (i32 number: arr) : do {
+    printf("Your number is {number}!");
+} done;
+
+# for loop
+for(i32 i = 0; i < len(arr); i++) : do {
+    printf("Your number is {arr[i]}.");
+} done;
+
+# while loop
+while (true) : do {
+    print("Hello, World!");
+    break;
+} done;
+
+switch(name) : do {
+    case ("Myambo") {
+        print("Hey there your name is myambo");
+    }
+    /*
+    * either one of these are defaults and there must be only 1 of them.
+    * The pipe is for multiple variables usage.
+    */
+    case ("Hlulie" | "Hlulani") {
+        printf("Hey there {name}");
+    } case (*) {
+        print("This is the default statement");
+    }
+} done;
+
+/*
+* Functions
+*  It requires access-modifier just like in java, it uses only 3 of them.
+*   private, public, protected
+*
+*   ACCESS-MODIFIERS EXPLANATION
+*   public -> accessed anywhere.
+*   private -> within the class of creation.
+*   protected -> within by what inherit it and the class creation.
+*/
+
+// basic function that returns a string
+public getName() -> string {
+    return "Hello, {name}";
+} done;
+
+/**
+* function that returns a value of some sort.
+* if the function and is not given a value, indicated by !value
+* then assign the value within after the := into the value variable and use it as a default variable
+* In short this is the way of giving the function default values.
+*/
+public _value(string value) -> string {
+    return "Hello, {!value := "World!"};
+} done;
+
+// usage of multiple returns must be within () and separated by pipe
+// this keyword can only be used within the class only.
+public set_name_and_retrive_name(string name) -> (null | string) {
+    this.name = "Hello, Myambo";
+    return name;
+} done;
