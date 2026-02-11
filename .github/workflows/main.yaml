@@ -1,0 +1,69 @@
+name: CI on compilers
+
+on:
+  push:
+  pull_request:
+
+jobs:
+
+  check-protected-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check for forbidden file changes
+        run: |
+          PROTECTED_FILES=(
+            "pom.xml"
+            ".github/workflows/main.yaml"
+            "LICENSE"
+          )
+
+          # Determine correct base for comparison
+          if [[ "${{ github.event_name }}" == "pull_request" ]]; then
+            BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          else
+            BASE_SHA="origin/main"
+          fi
+
+          CHANGED_FILES=$(git diff --name-only $BASE_SHA HEAD)
+
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          for file in "${PROTECTED_FILES[@]}"; do
+            if echo "$CHANGED_FILES" | grep -Fxq "$file"; then
+              if [[ "$GITHUB_ACTOR" != "myambohlulani" ]]; then
+                echo "Error: Only myambohlulani can modify $file"
+                exit 1
+              fi
+            fi
+          done
+
+          echo "Protected file check passed!"
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: check-protected-files
+
+    strategy:
+      matrix:
+        java: [21, 25]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: ${{ matrix.java }}
+          cache: maven
+
+      - name: Build and run tests
+        run: mvn clean test
