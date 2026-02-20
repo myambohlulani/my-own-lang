@@ -14,7 +14,8 @@
                 <break_statement> |
                 <continue_statement> |
                 <return_statement> |
-                <function>
+                <function> |
+                <class>
 
 <block> ::= "{" <statement>* "}"
 

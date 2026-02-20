@@ -149,7 +149,7 @@
     }
 
     public _value(string value) -> string {
-        return "Hello, {!value := "World!"};
+        return "Hello, {?value := "World!"};
     }
 
     private helper() -> void {
