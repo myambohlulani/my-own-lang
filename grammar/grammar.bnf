@@ -14,7 +14,8 @@
                 <break_statement> |
                 <continue_statement> |
                 <return_statement> |
-                <function>
+                <function> |
+                <class>
 
 <block> ::= "{" <statement>* "}"
 
@@ -131,7 +132,18 @@
 # =========================================================
 #                       Classes
 # =========================================================
+<class> ::= <access_modifier> <object_type> <identifier> "{"
+                <assignment>+  | <declaration>
+                <constructor>*
+                <entry_point>
+                <statement>+
+            "}"
 
+<object_type> ::= "class" | "interface" | "enum" | "record"
+
+<constructor> ::= <access_modifier>+ <object_type> "(" <declaration> ")" "{"
+                    <statement>+
+                "{"
 
 # =========================================================
 #                       Comments

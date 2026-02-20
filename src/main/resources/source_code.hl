@@ -81,7 +81,7 @@ public getName() -> string {
 * In short this is the way of giving the function default values.
 */
 public _value(string value) -> string {
-    return "Hello, {!value := "World!"};
+    return "Hello, {?value := "World!"}";
 } done;
 
 // usage of multiple returns must be within () and separated by pipe
@@ -90,3 +90,28 @@ public set_name_and_retrive_name(string name) -> (null | string) {
     this.name = "Hello, Myambo";
     return name;
 } done;
+
+public class Name {
+    string name;
+    private const string _name;
+    private const string _name_;
+
+    public Name(string name, string _name, string _name_) {
+        this.name = ?name := "Hello, World!";
+        this._name = ?_name := "Hlulani";
+        this._name_ = ?_name_ := "Hlulanoo!";
+    }
+
+    // entry point
+    public main(string[] argc)  -> void {
+
+    }
+}
+
+public class LinkedList<T> {
+
+}
+
+public class Tree<T extends Comparable<T>> {
+
+}

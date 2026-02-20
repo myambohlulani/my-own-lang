@@ -149,7 +149,7 @@
     }
 
     public _value(string value) -> string {
-        return "Hello, {!value := "World!"};
+        return "Hello, {?value := "World!"};
     }
 
     private helper() -> void {
@@ -158,5 +158,31 @@
 
     protected will_be_inherited() -> void {
         // body
-    }****
+    }
 ```
+
+## Class
+```
+public class Name {
+
+}
+
+<- follows java conventions ->
+access-modifier type identifier {
+    // body
+}
+
+```
+
+## << Supported Data types >>
+``i32`` -> Integer 32 bits.</br>
+``i64`` -> Integer 64 bits.</br>
+``f32`` -> Floating point of 32 bits.</br>
+``f64`` -> Floating point of 64 bits.</br>
+``bool`` -> Boolean , ``true`` or ``false``.</br>
+``string`` -> String -> Sequence of characters.</br>
+
+## Tips and Tricks
+<pre>
+
+</pre>
