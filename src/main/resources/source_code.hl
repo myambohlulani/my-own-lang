@@ -81,7 +81,7 @@ public getName() -> string {
 * In short this is the way of giving the function default values.
 */
 public _value(string value) -> string {
-    return "Hello, {!value := "World!"}";
+    return "Hello, {?value := "World!"}";
 } done;
 
 // usage of multiple returns must be within () and separated by pipe
