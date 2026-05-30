@@ -1,5 +1,8 @@
 #ifndef MAIN_H
 #define MAIN_H
+#include <fstream>
+#include <string>
+#include <iterator>
 
 // CHECKING FOR FILE EXTENSION
 int correct_extension(std::string filename, std::string extension) {
@@ -14,6 +17,22 @@ int correct_extension(std::string filename, std::string extension) {
 
 
         return EXIT_SUCCESS;
+}
+
+// Reading all contents of a file at once
+std::string read_file_contents(std::string filename) {
+	std::ifstream file(filename);
+
+	if(!file.is_open()) {
+		std::cout << "file faile to open" << std::endl;
+		return "";
+	}
+
+	std::ostringstream ss;
+
+	ss << file.rdbuf();
+
+	return ss.str();
 }
 
 #endif // MAIN_H

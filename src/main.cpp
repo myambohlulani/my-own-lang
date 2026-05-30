@@ -17,27 +17,21 @@ int main(int argc, char* argv[]) {
 	// checking for correct extension
 	std::string extension;
 	std::string filename = argv[1];
+	std::string contents;
 
+	// checking for correct extension 
 	if(correct_extension(filename, extension) == EXIT_SUCCESS){
-		std::stringstream contents_stream;
-		std::string contents;
+		contents = read_file_contents(filename); // reading the file
 
-
-		/* reading a file
-	 	* argv[0] is the path and std::ios::in is for reading only.
-		 * It will automatically close the buffer due to the scope.
-		 */
-		{
-	       		std::fstream input(argv[0], std::ios::in);
-			// reading the whole thing from the file
-			contents_stream << input.rdbuf();
-			contents = contents_stream.str();
-		}
-
+		// did not read anything so it is considered a failure.
+		if((contents== "")) {
+			return EXIT_FAILURE;
+		} 
+		
+		// printing the content i just read.
 		std::cout << contents << std::endl;
-	}
+	}	
 
-	std::cout << extension << std::endl;
 
 	return EXIT_SUCCESS;
 }
