@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 
-./build/Radium
+./build/radium grammar/main.hlx
