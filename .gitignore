@@ -1,4 +1,7 @@
 target/
 *.class
 *.zip
-*.c
+*.exe
+*.o
+.vscode/
+.idea/
