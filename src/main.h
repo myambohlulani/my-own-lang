@@ -1,5 +1,6 @@
 #ifndef MAIN_H
 #define MAIN_H
+
 #include <fstream>
 #include <string>
 #include <iterator>
@@ -26,7 +27,7 @@ std::string read_file_contents(std::string filename) {
 	std::ifstream file(filename);
 
 	if(!file.is_open()) {
-		std::cout << "file faile to open" << std::endl;
+		std::cout << "file failed to open" << std::endl;
 		return "";
 	}
 
@@ -38,42 +39,28 @@ std::string read_file_contents(std::string filename) {
 }
 
 // TOKEN types
-enum class TokenType {
+typedef enum class TokenType {
 	_return,
 	int_lit,
 	semicolon
-}
+} TokenType;
 
 // TOKEN
 typedef struct Token {
-	TokenType type,
-	std::optional<std::string> value;
+	TokenType type;
+	std::string value;
 } Token;
 
 // Tokenizer
-std::vector<Token> tokenize(const std::string &str) {
+std::vector<char> tokenize(const std::string &str) {
 	std::vector<char> buf {}; // buffer
 
-	for(int i = 0; i < str.length(); i++) {
-		char c = str.at(i);
-
-		// checking for keywords
-		if(std::isalpha(c)) {
-			buf.push_back(c);
-			i++;
-
-			while(std::isalnum(str.at(i))) {
-				buf.push_back(str.at(i));
-				i++;
-			}
-
-			i--;
-		}
-
-		// checking for keyword.
-
+	for(int i = 0; i < str.size(); i++) {
+		std::cout << str.at(i) << std::endl;
+		buf.push_back(str.at(i));	
 	}
 
+	return buf;
 }
 
 #endif // MAIN_H
