@@ -4,3 +4,6 @@ printf("Hello, your age is {age}.");
 
 char* name{"Hlulani"};
 printf("Hello, Your name is {name}.");
+
+float pi{3.141f};
+printf("The value of pi is {pi}"); // it will print the value of pi is 3.141
