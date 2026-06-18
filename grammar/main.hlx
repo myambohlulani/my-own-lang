@@ -1,3 +1,6 @@
 int age {19} ;
 
 printf("Hello, your age is {age}.");
+
+char* name{"Hlulani"};
+printf("Hello, Your name is {name}.");
