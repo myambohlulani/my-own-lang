@@ -18,12 +18,10 @@
 3. // This is a comment too
 
 ### Multi-line comments
-1. /* This is a multi Line comment */ 
+1. /* This is a multi Line comment */
 
 ### Documentation comment - Similar to java
 1. /** This is a docs comment */
-<<<<<<< HEAD
-=======
 
 ## Data-Types
 1. Integers:
@@ -61,4 +59,3 @@ with aliasing
 ```hlx
 import::<name> as <your aliasing here but with no space>
 ```
->>>>>>> 8b3a7bd (doc (grammar): add a way in which you can import some files and some modules)
