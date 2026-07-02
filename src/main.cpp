@@ -3,15 +3,7 @@
 #include <cstring>
 #include <sstream>
 #include "./main.h"
-<<<<<<< HEAD
 #include "./lexer.hpp"
-=======
-#include "../frontend/lexer.hpp"
-
-
-typedef enum Token Token;
->>>>>>> origin/main
-
 
 int main(int argc, char* argv[]) {
 	if(argc != 2 ) {
@@ -40,10 +32,7 @@ int main(int argc, char* argv[]) {
 		std::cout << contents << std::endl;
 
 		// start lexing or converting into tokens
-<<<<<<< HEAD
-=======
-		Lexer lexer(contents);
->>>>>>> origin/main
+		tokenize(contents);
 	}	
 
 
