@@ -135,4 +135,37 @@ std::string tokens_to_asm(const std::vector<Token> tokens) {
 	return output.str();
 }
 
+class Lexer {
+	public:
+		// taking a copy of what i pass - string being passed
+		inline Lexer(std::string& str) : m_str(std::move(str)) {
+		}
+
+		inline std::vector<Token> tokenize() {
+
+		}
+
+	private:
+		const std::string m_str;
+		int m_curr_index = 0;
+
+		[[nodiscard]] std::optional<char> look_next_character(int ahead = 1) const {
+			/**
+				This method peaks characters ahead, 1 is for default and you can specify the offset
+				It does not change the contents of the class hence const and no-discard,
+				This is same as peek in other compilers
+			*/
+			if(m_curr_index + ahead >= m_str.size() {
+				return {};
+			} else {
+				return m_str.at(m_curr_index);
+			}
+		}
+
+		char pass_curr_char() {
+			// This is similar to consume
+			return m_str.at(m_curr_index++);
+		}
+}
+
 #endif // LEXER_H
