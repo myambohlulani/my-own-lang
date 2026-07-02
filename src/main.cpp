@@ -28,11 +28,13 @@ int main(int argc, char* argv[]) {
 			return EXIT_FAILURE;
 		} 
 		
-		// printing the content i just read.
-		std::cout << contents << std::endl;
+		// printing the content i just read. for debugging purposes
+		//std::cout << contents << std::endl;
 
 		// start lexing or converting into tokens
-		tokenize(contents);
+		std::vector<Token> tokens = tokenize(contents);
+		std::string strs = tokens_to_asm(tokens);
+		write_contents_into_a_file(strs);
 	}	
 
 
