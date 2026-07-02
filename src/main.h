@@ -27,7 +27,8 @@ std::string read_file_contents(std::string filename) {
 	std::ifstream file(filename);
 
 	if(!file.is_open()) {
-		std::cout << "file failed to open" << std::endl;
+		std::cout << "file " << filename << " failed to open" << std::endl;
+
 		return "";
 	}
 

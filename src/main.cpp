@@ -3,10 +3,7 @@
 #include <cstring>
 #include <sstream>
 #include "./main.h"
-#include "../frontend/lexer.hpp"
-
-
-typedef enum Token Token;
+#include "./lexer.hpp"
 
 
 int main(int argc, char* argv[]) {
@@ -36,7 +33,6 @@ int main(int argc, char* argv[]) {
 		std::cout << contents << std::endl;
 
 		// start lexing or converting into tokens
-		Lexer lexer(contents);
 	}	
 
 
