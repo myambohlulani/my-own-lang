@@ -1,8 +1,9 @@
 #ifndef LEXER_H
 #define LEXER_H
 #include <iostream>
+#include <optional>
 
-enum TokenType {
+enum class TokenType {
 	INDENTIFIER,
     // control flow
     IF_KEY,
@@ -38,6 +39,9 @@ enum TokenType {
 	FLOAT_LIT,
 	DOUBLE_LIT,
 
+	// functions
+	RETURN,
+
 	// display
 	PRINT,
 
@@ -48,8 +52,7 @@ enum TokenType {
 
 typedef struct Token {
 	TokenType type;
-	std::string raw_data; // can be Hlulani or any literal ..etc
-	int line_number;
+	std::optional<std::string> value; // can be Hlulani or any literal ..etc
 } Token;
 
 
