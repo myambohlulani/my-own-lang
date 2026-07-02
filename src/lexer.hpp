@@ -64,15 +64,13 @@ std::vector<Token> tokenize(const std::string& contents) {
 		char current_char = contents.at(i);
 
 		if(std::isalpha(current_char)) {
-			// identifier or keyword
+			// starts with a char, hence either identifier or keyword
 			while(std::isalnum(contents.at(i))) {
-				current_string.push_back(contents.at(i));
+				current_string.push_back(contents.at(i)); // TODO: Check for single identifier value, i think it can throw errors
 				i++;
 			}
 
 			i--;
-
-			std::cout << current_string << std::endl;
 
 			if (current_string == "int") { 
 				tokens.push_back({.type = TokenType::INT_KEY});
@@ -82,13 +80,35 @@ std::vector<Token> tokenize(const std::string& contents) {
 				std::cout << "Default case" << std::endl;
 			}
 
+		} else if (std::isspace(current_char)) {
+			continue; // ignoring space
+		} else if(std::isdigit(current_char)) {
+			current_string.push_back(current_char);
+			i++;
 
-			// reseting the string to take the next token
-			current_string.clear();
+			while(std::isdigit(contents.at(i))) {
+				current_string.push_back(contents.at(i));
+				i++;
+			}
+
+			i--;
+
+			tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
+		} else if (current_char == ';') {
+			current_string.push_back(contents.at(i));
+			tokens.push_back({.type = TokenType::SEMICOLON});
+		} else {
+			std::cerr << "You are at the end, maybe there is an error" << std::endl;
 		}
+		
+			
+		// debugging purpose
+		std::cout << current_string << std::endl;
+		// reseting the string to take the next token
+		current_string.clear();
 	}
+
 	return tokens;
 }
-
 
 #endif // LEXER_H
