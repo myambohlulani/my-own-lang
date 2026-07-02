@@ -6,6 +6,7 @@
 #include <iterator>
 #include <optional>
 #include <vector>
+#include <filesystem>
 
 // CHECKING FOR FILE EXTENSION
 int correct_extension(std::string filename, std::string extension) {
@@ -39,5 +40,20 @@ std::string read_file_contents(std::string filename) {
 	return ss.str();
 }
 
+void write_contents_into_a_file(std::string& contents, const std::string& path = "./bin/out.asm") {
+
+	std::filesystem::path p(path);
+	if(p.has_parent_path()) {
+		std::filesystem::create_directories(p.parent_path());
+	}
+
+	std::ofstream file(path);
+	if(!file) {
+		std::cerr << "Failed to create the file\n";
+		exit(EXIT_FAILURE);
+	}
+
+	file << contents;
+}
 
 #endif // MAIN_H
