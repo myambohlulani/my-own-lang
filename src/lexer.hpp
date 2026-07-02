@@ -103,12 +103,35 @@ std::vector<Token> tokenize(const std::string& contents) {
 		
 			
 		// debugging purpose
-		std::cout << current_string << std::endl;
+		//std::cout << current_string << std::endl;
 		// reseting the string to take the next token
 		current_string.clear();
 	}
 
 	return tokens;
+}
+
+std::string tokens_to_asm(const std::vector<Token> tokens) {
+	std::stringstream output;
+
+	// giving it values at the top
+	output << "global _start\n_start:\n";
+	
+	for(int i = 0; i < tokens.size(); i++) {
+		const Token& token = tokens.at(i);
+
+		if(token.type == TokenType::RETURN) { // checking if i start with a return
+			if(i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::INT_LIT) {
+				if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::SEMICOLON) {
+					output << "	mov rax, 60\n";
+					output << "	mov rdi, " << tokens.at(i + 1).value.value() << std::endl;
+					output << "	syscall";
+				}
+			}
+		}
+	}
+
+	return output.str();
 }
 
 #endif // LEXER_H
