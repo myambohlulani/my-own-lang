@@ -2,6 +2,7 @@
 #define LEXER_H
 #include <iostream>
 #include <optional>
+#include <vector>
 
 enum class TokenType {
 	INDENTIFIER,
@@ -52,8 +53,42 @@ enum class TokenType {
 
 typedef struct Token {
 	TokenType type;
-	std::optional<std::string> value; // can be Hlulani or any literal ..etc
+	std::optional<std::string> value {}; // can be Hlulani or any literal ..etc
 } Token;
+
+std::vector<Token> tokenize(const std::string& contents) {
+	std::vector<Token> tokens{};
+	std::string current_string{};
+	
+	for(int i = 0; i < contents.size(); i++) {
+		char current_char = contents.at(i);
+
+		if(std::isalpha(current_char)) {
+			// identifier or keyword
+			while(std::isalnum(contents.at(i))) {
+				current_string.push_back(contents.at(i));
+				i++;
+			}
+
+			i--;
+
+			std::cout << current_string << std::endl;
+
+			if (current_string == "int") { 
+				tokens.push_back({.type = TokenType::INT_KEY});
+			} else if (current_string == "return") {
+				tokens.push_back({.type = TokenType::RETURN});
+			} else {
+				std::cout << "Default case" << std::endl;
+			}
+
+
+			// reseting the string to take the next token
+			current_string.clear();
+		}
+	}
+	return tokens;
+}
 
 
 #endif // LEXER_H
