@@ -3,14 +3,13 @@
 #include <iostream>
 
 enum TokenType {
+	INDENTIFIER,
     // control flow
     IF_KEY,
     ELSEIF_KEY,
     ELSE_KEY,
     WHILE_KEY,
     FOR_KEY,
-    // data type
-    INT_KEY,
 
     // operators
     EQUALS_OP,
@@ -24,31 +23,34 @@ enum TokenType {
 	FLOAT_KEY,
 	DOUBLE_KEY,
 
+	// Symbols
+	OP_PAREN,
+	CL_PAREN,
+	OP_CURLY,
+	CL_CURLY,
+
+	// Comments
+	COMMENT,
+
+	// literals
+	INT_LIT,
+	STRING_LIT,
+	FLOAT_LIT,
+	DOUBLE_LIT,
+
+	// display
+	PRINT,
+
 	// termination of the line
     SEMICOLON, 
 	END_OF_LINE
 };
 
-struct Token {
+typedef struct Token {
 	TokenType type;
-	std::string contents;
+	std::string raw_data; // can be Hlulani or any literal ..etc
 	int line_number;
 } Token;
 
-
-class Lexer {
-	public:
-		Lexer(std::string contents): contents(contents) {
-		}
-
-		std::vector<Token> tokenize() {
-
-		}
-	
-	private:
-		std::string contents;
-		std::vector<Token> tokens;
-
-}
 
 #endif // LEXER_H
