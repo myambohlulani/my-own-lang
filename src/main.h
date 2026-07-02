@@ -38,29 +38,5 @@ std::string read_file_contents(std::string filename) {
 	return ss.str();
 }
 
-// TOKEN types
-typedef enum class TokenType {
-	_return,
-	int_lit,
-	semicolon
-} TokenType;
-
-// TOKEN
-typedef struct Token {
-	TokenType type;
-	std::string value;
-} Token;
-
-// Tokenizer
-std::vector<char> tokenize(const std::string &str) {
-	std::vector<char> buf {}; // buffer
-
-	for(int i = 0; i < str.size(); i++) {
-		std::cout << str.at(i) << std::endl;
-		buf.push_back(str.at(i));	
-	}
-
-	return buf;
-}
 
 #endif // MAIN_H
