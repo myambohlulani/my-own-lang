@@ -1,4 +1,4 @@
-int age {19} ;
+int age{19};
 
 printf("Hello, your age is {age}.");
 
