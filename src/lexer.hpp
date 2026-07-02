@@ -42,6 +42,7 @@ enum class TokenType {
 
 	// functions
 	RETURN,
+	EXIT,
 
 	// display
 	PRINT,
@@ -74,8 +75,8 @@ std::vector<Token> tokenize(const std::string& contents) {
 
 			if (current_string == "int") { 
 				tokens.push_back({.type = TokenType::INT_KEY});
-			} else if (current_string == "return") {
-				tokens.push_back({.type = TokenType::RETURN});
+			} else if (current_string == "exit") {
+				tokens.push_back({.type = TokenType::EXIT});
 			} else {
 				std::cout << "Default case" << std::endl;
 			}
@@ -120,7 +121,7 @@ std::string tokens_to_asm(const std::vector<Token> tokens) {
 	for(int i = 0; i < tokens.size(); i++) {
 		const Token& token = tokens.at(i);
 
-		if(token.type == TokenType::RETURN) { // checking if i start with a return
+		if(token.type == TokenType::EXIT) { // checking if i start with a return
 			if(i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::INT_LIT) {
 				if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::SEMICOLON) {
 					output << "	mov rax, 60\n";
