@@ -32,8 +32,9 @@ int main(int argc, char* argv[]) {
 		//std::cout << contents << std::endl;
 
 		// start lexing or converting into tokens
-		std::vector<Token> tokens = tokenize(contents);
-		std::string strs = tokens_to_asm(tokens);
+		Lexer lexer(std::move(contents));
+		Lexer* lex = &lexer;
+		std::string strs = tokens_to_asm(lex -> tokenize());
 		write_contents_into_a_file(strs);
 	}	
 
