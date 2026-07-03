@@ -4,6 +4,7 @@
 #include <sstream>
 #include "./main.h"
 #include "./lexer.hpp"
+#include "./parser.h"
 
 int main(int argc, char* argv[]) {
 	if(argc != 2 ) {
