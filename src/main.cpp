@@ -34,9 +34,27 @@ int main(int argc, char* argv[]) {
 		//std::cout << contents << std::endl;
 
 		// start lexing or converting into tokens
-		Lexer lexer(std::move(contents));
-		Lexer* lex = &lexer;
-		std::string strs = tokens_to_asm(lex -> tokenize());
+		Lexer lex(std::move(contents));
+		Lexer* lexer = &lex;
+
+		std::vector<Token> tokens = lexer -> tokenize(); // tokens
+		
+		// Parser
+		Parser par(std::move(tokens));
+		Parser* parser = &par;
+		optional<ParserNode::NodeExit> tree = parser -> parse();
+
+		if(!tree.has_value()) {
+			std::cerr << "there exists no exit statement" << std::endl;
+			exit(EXIT_FAILURE);
+		}
+
+		// generator
+		Generator gen(tree.value());
+		Generator* generator = &gen;
+
+		// generating the code
+		std::string strs = generator -> generate();
 		write_contents_into_a_file(strs);
 	}	
 
