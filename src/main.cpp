@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
 		// Parser
 		Parser par(std::move(tokens));
 		Parser* parser = &par;
-		optional<ParserNode::NodeExit> tree = parser -> parse();
+		std::optional<NodeExit> tree = parser -> parse();
 
 		if(!tree.has_value()) {
 			std::cerr << "there exists no exit statement" << std::endl;
