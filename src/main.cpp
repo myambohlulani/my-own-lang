@@ -2,9 +2,10 @@
 #include <fstream>
 #include <cstring>
 #include <sstream>
-#include "./main.h"
+#include "./main.hpp"
 #include "./lexer.hpp"
-#include "./parser.h"
+#include "./parser.hpp"
+#include "./codegen.hpp"
 
 int main(int argc, char* argv[]) {
 	if(argc != 2 ) {
