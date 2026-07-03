@@ -57,60 +57,6 @@ typedef struct Token {
 	std::optional<std::string> value {}; // can be Hlulani or any literal ..etc
 } Token;
 
-std::vector<Token> tokenize(const std::string& contents) {
-	std::vector<Token> tokens{};
-	std::string current_string{};
-	
-	for(int i = 0; i < contents.size(); i++) {
-		char current_char = contents.at(i);
-
-		if(std::isalpha(current_char)) {
-			// starts with a char, hence either identifier or keyword
-			while(std::isalnum(contents.at(i))) {
-				current_string.push_back(contents.at(i)); // TODO: Check for single identifier value, i think it can throw errors
-				i++;
-			}
-
-			i--;
-
-			if (current_string == "int") { 
-				tokens.push_back({.type = TokenType::INT_KEY});
-			} else if (current_string == "exit") {
-				tokens.push_back({.type = TokenType::EXIT});
-			} else {
-				std::cout << "Default case" << std::endl;
-			}
-
-		} else if (std::isspace(current_char)) {
-			continue; // ignoring space
-		} else if(std::isdigit(current_char)) {
-			current_string.push_back(current_char);
-			i++;
-
-			while(std::isdigit(contents.at(i))) {
-				current_string.push_back(contents.at(i));
-				i++;
-			}
-
-			i--;
-
-			tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
-		} else if (current_char == ';') {
-			current_string.push_back(contents.at(i));
-			tokens.push_back({.type = TokenType::SEMICOLON});
-		} else {
-			std::cerr << "You are at the end, maybe there is an error" << std::endl;
-		}
-		
-			
-		// debugging purpose
-		//std::cout << current_string << std::endl;
-		// reseting the string to take the next token
-		current_string.clear();
-	}
-
-	return tokens;
-}
 
 std::string tokens_to_asm(const std::vector<Token> tokens) {
 	std::stringstream output;
@@ -138,16 +84,58 @@ std::string tokens_to_asm(const std::vector<Token> tokens) {
 class Lexer {
 	public:
 		// taking a copy of what i pass - string being passed
-		inline Lexer(std::string& str) : m_str(std::move(str)) {
+		inline explicit Lexer(std::string& str) : m_str(std::move(str)) {
 		}
 
 		inline std::vector<Token> tokenize() {
+			std::string current_string{};
+			const std::vector<Token> tokens{};
 
-		}
+			while(look_next_character().has_value()) {
+				if(std::isalpha(look_next_character().value())) {
+					current_string.push_back(pass_curr_char());
+
+					while(look_next_character().has_value() && std::isalnum(look_next_character().value())) {
+						current_string.push_back(pass_curr_char());
+					}
+
+					if (current_string == "int") {
+						tokens.push_back({.type = TokenType::INT_KEY});
+					} else if(current_string == "exit") {
+						tokens.push_back({.type = TokenType::EXIT});
+					} else {
+						std::cerr << "Maybe an identifier?" << std::endl;
+					}
+
+					current_string.clear(); // clearing the string
+
+				} else if(std::isdigit(look_next_value().value())) {
+					current_string.push_back(pass_curr_char());
+
+					while(look_next_value().has_value() && std::isdigit(look_next_value().value())) {
+						current_string.push_back(pass_curr_char());
+					}
+	
+					tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
+					current_string.clear();
+				} else if(std::isspace(pass_curr_char().value())) {
+					continue;
+				} else if (look_next_value().value() == ';') {
+					tokens.push_back({.type = TokenType::SEMICOLON});
+					continue;
+				} else {
+					std::cerr << "Hahaha error" << std::endl;
+				}
+			}
+
+			m_curr_index = 0;
+			return tokens;
+		}	
 
 	private:
 		const std::string m_str;
 		int m_curr_index = 0;
+		
 
 		[[nodiscard]] std::optional<char> look_next_character(int ahead = 1) const {
 			/**
@@ -166,6 +154,6 @@ class Lexer {
 			// This is similar to consume
 			return m_str.at(m_curr_index++);
 		}
-}
+};
 
 #endif // LEXER_H
