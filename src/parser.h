@@ -26,7 +26,7 @@ class Parser {
 		inline explicit Parser(std::vector<Token> tokens) : m_tokens(std::move(tokens)) {
 		}
 
-		std::optional<ParserNode::NodeExit> parse() {
+		inline std::optional<ParserNode::NodeExit> parse() {
 			std::optional<ParserNode::NodeExit> exit_node;
 
 			while(peek().has_value()) {
@@ -54,7 +54,7 @@ class Parser {
 		/**
 		This method parsers and expression
 		*/
-		std::optional<ParserNode::NodeExpr> parse_expr() {
+		inline std::optional<ParserNode::NodeExpr> parse_expr() {
 			if(peek().has_value() && peek().value().type == TokenType::INT_LIT) {
 				return ParserNode::NodeExpr{.INT_LIT = consume()}; // consuming the literal
 			} else {
