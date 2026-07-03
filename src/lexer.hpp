@@ -58,29 +58,6 @@ typedef struct Token {
 } Token;
 
 
-std::string tokens_to_asm(const std::vector<Token> tokens) {
-	std::stringstream output;
-
-	// giving it values at the top
-	output << "global _start\n_start:\n";
-	
-	for(int i = 0; i < tokens.size(); i++) {
-		const Token& token = tokens.at(i);
-
-		if(token.type == TokenType::EXIT) { // checking if i start with a return
-			if(i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::INT_LIT) {
-				if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::SEMICOLON) {
-					output << "	mov rax, 60\n";
-					output << "	mov rdi, " << tokens.at(i + 1).value.value() << "\n" << std::endl;
-					output << "	syscall\n";
-				}
-			}
-		}
-	}
-
-	return output.str();
-}
-
 class Lexer {
 	public:
 		// taking a copy of what i pass - string being passed
