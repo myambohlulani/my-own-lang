@@ -71,8 +71,8 @@ std::string tokens_to_asm(const std::vector<Token> tokens) {
 			if(i + 1 < tokens.size() && tokens.at(i + 1).type == TokenType::INT_LIT) {
 				if(i + 2 < tokens.size() && tokens.at(i + 2).type == TokenType::SEMICOLON) {
 					output << "	mov rax, 60\n";
-					output << "	mov rdi, " << tokens.at(i + 1).value.value() << std::endl;
-					output << "	syscall";
+					output << "	mov rdi, " << tokens.at(i + 1).value.value() << "\n" << std::endl;
+					output << "	syscall\n";
 				}
 			}
 		}
@@ -126,10 +126,12 @@ class Lexer {
 					tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
 					current_string.clear();
 				} else if(std::isspace(curr_char)) {
+					pass_curr_char();
 					continue;
 				} else if (curr_char == ';') {
 					tokens.push_back({.type = TokenType::SEMICOLON});
-					std::cout << "Semicolon" << std::endl;
+					pass_curr_char(); // consume
+					// std::cout << "Semicolon" << std::endl; // for debugging
 				} else {
 					std::cerr << "Hahaha error" << std::endl; //error for debugging for now
 					pass_curr_char(); // consume to avoid infinite loop
