@@ -62,8 +62,7 @@ typedef struct Token {
 class Lexer {
 	public:
 		// taking a copy of what i pass - string being passed
-		inline explicit Lexer(const std::string& str) : m_str(std::move(str)) {
-		}
+		inline explicit Lexer(const std::string& str) : m_str(std::move(str)) {}
 
 		inline std::vector<Token> tokenize() {
 			std::string current_string{};
@@ -92,7 +91,7 @@ class Lexer {
 					// exit 
 					else if(current_string == "exit") {
 						tokens.push_back({.type = TokenType::EXIT});
-
+					}
 					else {
 						std::cerr << "Maybe an identifier?" << std::endl;
 					}
@@ -123,16 +122,16 @@ class Lexer {
 				} 
 				
 				// symbols
-				else if (curr_char == "{") {
+				else if (curr_char == '{') {
 					tokens.push_back({.type = TokenType::OP_CURLY});
 					pass_curr_char();
-				} else if (curr_char == "}") {
+				} else if (curr_char == '}') {
 					tokens.push_back({.type = TokenType::CL_CURLY});					
 					pass_curr_char();
-				} else if (curr_char == "(") {
+				} else if (curr_char == '(') {
 					tokens.push_back({.type = TokenType::OP_PAREN});					
 					pass_curr_char();
-				} else if(curr_char == ")") {
+				} else if(curr_char == ')') {
 					tokens.push_back({.type = TokenType::CL_PAREN});					
 					pass_curr_char();
 				} else {
@@ -150,7 +149,7 @@ class Lexer {
 		int m_curr_index = 0;
 		
 
-		[[nodiscard]] inline std::optional<char> look_next_character(int ahead = 0) const {
+		[[nodiscard]] std::optional<char> look_next_character(int ahead = 0) const {
 			/**
 				This method peaks characters ahead, 1 is for default and you can specify the offset
 				It does not change the contents of the class hence const and no-discard,
@@ -163,7 +162,7 @@ class Lexer {
 			}
 		}
 
-		inline char pass_curr_char() {
+		 char pass_curr_char() {
 			// This is similar to consume
 			return m_str.at(m_curr_index++);
 		}
