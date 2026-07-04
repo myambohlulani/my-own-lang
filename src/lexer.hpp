@@ -18,6 +18,7 @@ enum class TokenType {
     PLUS_OP,
     DIVIDE_OP,
     MINUS_OP,
+	MULT_OP,
 
 	// Data types
 	INT_KEY,
@@ -78,11 +79,21 @@ class Lexer {
 						current_string.push_back(pass_curr_char());
 					}
 
+					// data types
 					if (current_string == "int") {
 						tokens.push_back({.type = TokenType::INT_KEY});
-					} else if(current_string == "exit") {
+					} else if(current_string == "string") {
+						tokens.push_back({.type = TokenType::STRING_KEY});
+					} else if (current_string == "float") {
+						tokens.push_back({.type = TokenType::FLOAT_KEY});
+					} else if(current_string == "double") {
+						tokens.push_back({.type = TokenType::DOUBLE_KEY});
+					} 
+					// exit 
+					else if(current_string == "exit") {
 						tokens.push_back({.type = TokenType::EXIT});
-					} else {
+
+					else {
 						std::cerr << "Maybe an identifier?" << std::endl;
 					}
                    
