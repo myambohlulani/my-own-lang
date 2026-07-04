@@ -63,11 +63,11 @@ class Parser {
 		}
 
 		// This method look for the next token with an offset of 0, can be incremented by an offset
-		[[nodiscard]] inline std::optional<Token> peek(int offset = 1) const {
-			if(m_index + offset > m_tokens.size()) {
+		[[nodiscard]] inline std::optional<Token> peek(int offset = 0) const {
+			if(m_index + offset >= m_tokens.size()) {
 				return {};
 			} else {
-				return m_tokens.at(m_index);
+				return m_tokens.at(m_index + offset);
 			}
 		}
 
