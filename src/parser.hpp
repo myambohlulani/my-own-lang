@@ -23,19 +23,32 @@ class Parser {
 		inline explicit Parser(std::vector<Token> tokens) : m_tokens(std::move(tokens)) {
 		}
 
+		/**
+			This method parses the exit statement with parentheses.
+		*/
 		inline std::optional<NodeExit> parse() {
 			std::optional<NodeExit> exit_node;
 
 			while(peek().has_value()) {
-				if(peek().value().type == TokenType::EXIT) {
+				// first token is exit and the next is open paren hence peek 1
+				if(peek().value().type == TokenType::EXIT &&peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
 					consume(); // consuming exit
+					//consume the open paren too
+					consume();
 					if(auto node_expr = parse_expr()) {
 						exit_node = NodeExit{.expr = node_expr.value()};
 					} else {
 						std::cerr << "Invalid expression" << std::endl;
 						exit(EXIT_FAILURE);
 					}
-
+					
+					// taking out the close paren
+					if(peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
+						consume(); 
+					} else {
+						std::cerr << "There is no close parentheses in your exit." << std::endl;
+					}
+					
 					// semi colon
 					if(peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
 						consume();
