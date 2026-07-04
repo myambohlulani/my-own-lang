@@ -150,7 +150,7 @@ class Lexer {
 		int m_curr_index = 0;
 		
 
-		[[nodiscard]] std::optional<char> look_next_character(int ahead = 0) const {
+		[[nodiscard]] inline std::optional<char> look_next_character(int ahead = 0) const {
 			/**
 				This method peaks characters ahead, 1 is for default and you can specify the offset
 				It does not change the contents of the class hence const and no-discard,
@@ -163,7 +163,7 @@ class Lexer {
 			}
 		}
 
-		char pass_curr_char() {
+		inline char pass_curr_char() {
 			// This is similar to consume
 			return m_str.at(m_curr_index++);
 		}
