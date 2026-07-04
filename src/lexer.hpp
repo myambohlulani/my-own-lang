@@ -120,6 +120,21 @@ class Lexer {
 					tokens.push_back({.type = TokenType::SEMICOLON});
 					pass_curr_char(); // consume
 					// std::cout << "Semicolon" << std::endl; // for debugging
+				} 
+				
+				// symbols
+				else if (curr_char == "{") {
+					tokens.push_back({.type = TokenType::OP_CURLY});
+					pass_curr_char();
+				} else if (curr_char == "}") {
+					tokens.push_back({.type = TokenType::CL_CURLY});					
+					pass_curr_char();
+				} else if (curr_char == "(") {
+					tokens.push_back({.type = TokenType::OP_PAREN});					
+					pass_curr_char();
+				} else if(curr_char == ")") {
+					tokens.push_back({.type = TokenType::CL_PAREN});					
+					pass_curr_char();
 				} else {
 					std::cerr << "Hahaha error" << std::endl; //error for debugging for now
 					pass_curr_char(); // consume to avoid infinite loop
