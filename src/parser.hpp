@@ -4,14 +4,27 @@
 #include "./lexer.hpp"
 #include <optional>
 
-// These nodes are for expressions and doing calculations	
-// 0 + 2 , 2 - 3 ..etc
-struct NodeExpr{
+// this will hold the integer
+struct NodeExprIntLit {
 	Token int_lit;
 };
 
+// this will hold - indentifier
+struct NodeExprIndent {
+	Token ident;
+};
+
+// will either contain expr or identifier
+struct NodeExpr{
+	std::variant<NodeExprIntLit, NodeExprIndent> var; // can be one of either
+};
+
+struct NodeStatement {
+	std::variant<NodeStmtExit, NodeExprIdent> var;
+};
+
 // exit(0) ..etc
-struct NodeExit {
+struct NodeStmtExit {
 	NodeExpr expr;
 };
 
@@ -27,7 +40,7 @@ class Parser {
 			This method parses the exit statement with parentheses.
 		*/
 		inline std::optional<NodeExit> parse() {
-			std::optional<NodeExit> exit_node;
+			std::optional<NodeStmtExit> exit_node;
 
 			while(peek().has_value()) {
 				// first token is exit and the next is open paren hence peek 1
@@ -64,6 +77,9 @@ class Parser {
 			m_index = 0; // reseting the value of the index to 0
 			return exit_node;
 		}
+
+
+		inline std::optional<NodeExpr>
 		/**
 		This method parsers and expression
 		*/
