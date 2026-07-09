@@ -8,3 +8,5 @@ target/
 build/
 *.un~
 bin/
+cmake-build-debug
+cmake*
