@@ -5,7 +5,7 @@
 #include <vector>
 
 enum class TokenType {
-  INDENTIFIER,
+  IDENTIFIER,
   // control flow
   IF_KEY,
   ELSEIF_KEY,
@@ -55,13 +55,13 @@ enum class TokenType {
 
 typedef struct Token {
   TokenType type;
-  std::optional<std::string> value{}; // can be Hlulani or any literal ..etc
+  std::optional<std::string> value{}; // can be Hlulani or any literal ...etc
 } Token;
 
 class Lexer {
 public:
-  // taking a copy of what i pass - string being passed
-  inline explicit Lexer(const std::string &str) : m_str(std::move(str)) {}
+  // taking a copy of what I pass - string being passed
+  inline explicit Lexer(std::string str) : m_str(std::move(str)) {}
 
   inline std::vector<Token> tokenize() {
     std::string current_string{};
@@ -148,7 +148,7 @@ private:
   const std::string m_str;
   int m_curr_index = 0;
 
-  [[nodiscard]] std::optional<char> look_next_character(int ahead = 0) const {
+  [[nodiscard]] std::optional<char> look_next_character(const int &ahead = 0) const {
     /**
             This method peaks characters ahead, 1 is for default and you can
        specify the offset It does not change the contents of the class hence
