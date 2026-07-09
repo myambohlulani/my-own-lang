@@ -7,9 +7,10 @@
 #include <optional>
 #include <string>
 #include <vector>
+#include <iostream>
 
 // CHECKING FOR FILE EXTENSION
-int correct_extension(std::string filename, std::string extension) {
+inline int correct_extension(const std::string &filename, std::string extension) {
   extension = filename.substr(filename.size() - 3);
 
   if (!(extension == "hlx" || extension == ".hl")) {
@@ -24,7 +25,7 @@ int correct_extension(std::string filename, std::string extension) {
 }
 
 // Reading all contents of a file at once
-std::string read_file_contents(std::string filename) {
+inline std::string read_file_contents(const std::string &filename) {
   std::ifstream file(filename);
 
   if (!file.is_open()) {
@@ -40,7 +41,7 @@ std::string read_file_contents(std::string filename) {
   return ss.str();
 }
 
-void write_contents_into_a_file(std::string &contents,
+inline void write_contents_into_a_file(const std::string &contents,
                                 const std::string &path = "./bin/out.asm") {
 
   std::filesystem::path p(path);
