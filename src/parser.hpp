@@ -4,27 +4,11 @@
 #include "./lexer.hpp"
 #include <optional>
 
-// this will hold the integer
-struct NodeExprIntLit {
+struct NodeExpr {
   Token int_lit;
 };
 
-// this will hold - indentifier
-struct NodeExprIndent {
-  Token ident;
-};
-
-// will either contain expr or identifier
-struct NodeExpr {
-  std::variant<NodeExprIntLit, NodeExprIndent> var; // can be one of either
-};
-
-struct NodeStatement {
-  std::variant<NodeStmtExit, NodeExprIdent> var;
-};
-
-// exit(0) ..etc
-struct NodeStmtExit {
+struct NodeExit {
   NodeExpr expr;
 };
 
@@ -34,56 +18,45 @@ class Parser {
      instead of char
   */
 public:
-  inline explicit Parser(std::vector<Token> tokens)
-      : m_tokens(std::move(tokens)) {}
+  inline explicit Parser(const std::vector<Token> &tokens) : m_tokens(tokens) {}
 
-  /**
-          This method parses the exit statement with parentheses.
-  */
-  inline std::optional<NodeExit> parse() {
-    std::optional<NodeStmtExit> exit_node;
+  inline std::optional<NodeExit> parse_exit() {
+    std::optional<NodeExit> exit_node {};
 
     while (peek().has_value()) {
-      // first token is exit and the next is open paren hence peek 1
-      if (peek().value().type == TokenType::EXIT && peek(1).has_value() &&
-          peek(1).value().type == TokenType::OP_PAREN) {
-        consume(); // consuming exit
-        // consume the open paren too
-        consume();
-        if (auto node_expr = parse_expr()) {
-          exit_node = NodeExit{.expr = node_expr.value()};
-        } else {
-          std::cerr << "Invalid expression" << std::endl;
-          exit(EXIT_FAILURE);
+      if (peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+        consume(); // consume exit
+        consume(); // consume the next open parentheses
+
+        // TODO: check for the value
+        if (const auto node_expr = parse_expr()) {
+          exit_node  = NodeExit {.expr = node_expr.value()};
         }
 
-        // taking out the close paren
+        // TODO: Check close paren
         if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
           consume();
         } else {
-          std::cerr << "There is no close parentheses in your exit."
-                    << std::endl;
+          std::cout << "There is no close parentheses in the exit" << std::endl;
         }
 
-        // semi colon
+          // TODO: Check semi-colon
         if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
           consume();
         } else {
-          std::cerr << "There is no semicolon" << std::endl;
+          std::cout << "There is no semicolon in the exit" << std::endl;
           exit(EXIT_FAILURE);
         }
       }
     }
 
-    m_index = 0; // reseting the value of the index to 0
     return exit_node;
   }
 
-  inline std::optional<NodeExpr>
-      /**
-      This method parsers and expression
-      */
-      inline std::optional<NodeExpr> parse_expr() {
+  /**
+     This method parsers and expression
+   */
+  inline std::optional<NodeExpr> parse_expr() {
     if (peek().has_value() && peek().value().type == TokenType::INT_LIT) {
       return NodeExpr{.int_lit = consume()}; // consuming the literal
     } else {
@@ -100,7 +73,6 @@ public:
       return m_tokens.at(m_index + offset);
     }
   }
-
   /**
           This method consumes a token
   */
