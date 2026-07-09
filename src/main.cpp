@@ -2,10 +2,8 @@
 #include "./codegen.hpp"
 #include "./lexer.hpp"
 #include "./parser.hpp"
-#include <cstring>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
 int main(int argc, char *argv[]) {
   if (argc != 2) {
@@ -41,9 +39,9 @@ int main(int argc, char *argv[]) {
     std::vector<Token> tokens = lexer->tokenize(); // tokens
 
     // Parser
-    Parser par(std::move(tokens));
+    Parser par(tokens);
     Parser *parser = &par;
-    std::optional<NodeExit> tree = parser->parse();
+    std::optional<NodeExit> tree = parser -> parse_exit();
 
     if (!tree.has_value()) {
       std::cerr << "there exists no exit statement" << std::endl;
