@@ -1,5 +1,6 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
+#include "./parser.hpp"
 
 class Generator {
 public:
@@ -16,7 +17,7 @@ public:
   }
 
 private:
-  const NodeExit m_root;
+  const NodeExit m_root{};
   const std::string m_start = "global _start\n_start:\n";
   const std::string m_syscall = "syscall\n";
 };
