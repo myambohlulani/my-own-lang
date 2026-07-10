@@ -76,6 +76,39 @@ public:
     return exit_node;
   }
 
+  /** This method parses the printf statement
+   */
+  inline std::optional<NodePrintf> parse_printf() {
+    std::optional <NodePrintf> printf_node {};
+
+    while (peek().has_value()) {
+      if (peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+        consume(); // printf
+        consume(); // (
+
+        if (const auto node_expr = parse_expr()) {
+          printf_node  = NodePrintf {.expr = node_expr.value()};
+        }
+
+        // close parentheses
+        if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
+          consume();
+        } else {
+          std::cerr << "There is no close parentheses for your printf" << std::endl;
+          exit(EXIT_FAILURE);
+        }
+
+        if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
+          consume();
+        } else {
+          std::cerr << "There is no semicolon for termination of printf" << std::endl;
+        }
+      }
+    }
+
+    return printf_node;
+  }
+
   /**
    * This method parse the data type
    * /
