@@ -40,8 +40,7 @@ private:
 
     // login the code for the exit
     output << "   li $v0, 4001\n";
-    output << "   li $a0, 0x01\n";
-    output << "   li $a1, " << node.expr.int_lit.value.value() << "\n";
+    output << "   li $a0, " << node.expr.int_lit.value.value() << "\n";
     output << "   " << m_syscall << "\n";
 
     return output.str();
@@ -74,8 +73,7 @@ private:
     std::stringstream output;
 
     output << "   li $v0, 4001\n"; // exit sys
-    output << "   li $a0, 1\n";
-    output << "   li $a1, 0\n";
+    output << "   li $a0, 0\n";
     output << "   " << m_syscall << "\n";
 
     return output.str();
