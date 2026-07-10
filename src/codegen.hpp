@@ -11,21 +11,11 @@ public:
     output << m_start;
 
     for (const NodeStatement& stmt : m_root.statements) {
-      // TODO: generate all the statements
+      //TODO: Generate all the statements
+      //output << generate_statements(stmt);
     }
 
-    return output.str();
-  }
-
-  [[nodiscard]] inline std::string generate_exit() const {
-    std::stringstream output;
-    output << m_start; // start part
-
-    // login the code for the exit
-    output << "   li $v0, 4001\n";
-    // output << "   li $a0, " << m_root.expr.int_lit.value.value() << "\n";
-    output << "   " << m_syscall << "\n";
-
+    // TODO: add a generate default_exit method, output << generate_default_exit();
     return output.str();
   }
 
@@ -35,6 +25,18 @@ private:
   const std::string m_syscall = "syscall\n";
   int  m_label_count = 0;
   int  m_var_count = 0;
+
+  [[nodiscard]] inline std::string generate_exit(const NodeExit& node) const {
+    std::stringstream output;
+    output << m_start; // start part
+
+    // login the code for the exit
+    output << "   li $v0, 4001\n";
+    output << "   li $a0, " << node.expr.int_lit.value.value() << "\n";
+    output << "   " << m_syscall << "\n";
+
+    return output.str();
+  }
 };
 
 #endif // CODEGEN_H
