@@ -63,14 +63,74 @@ public:
   }
 
   /**
+   * This method parse the data type
+   * /
+   */
+  inline std::optional<NodeIdent> parse_data_type() {
+    std::optional<NodeIdent> data_type {};
+
+    while (peek().has_value()) {
+      if ((peek().value().type == TokenType::INT_KEY ||
+        peek().value().type == TokenType::STRING_KEY ||
+        peek().value().type == TokenType::FLOAT_KEY ||
+        peek().value().type == TokenType::DOUBLE_KEY) && peek(1).has_value() && peek(1).value().type == TokenType::OP_CURLY) {
+        consume();
+
+        if (const auto int_data_type_expr = parse_expr()) {
+          data_type  = NodeIdent {.expr = int_data_type_expr.value()};
+        }
+        // float
+        else if (const auto float_data_type_expr = parse_expr()) {
+          data_type  = NodeIdent {.expr = float_data_type_expr.value()};
+        }
+        // double
+        else if (const auto double_data_type_expr = parse_expr()) {
+          data_type  = NodeIdent {.expr = double_data_type_expr.value()};
+        }
+        // string
+
+
+        // check for closed curly brace
+
+        if (peek().has_value() && peek().value().type == TokenType::CL_CURLY) {
+          consume();
+        } else {
+         std::cout << "There is no close parentheses in the data_type" << std::endl;
+        }
+
+        if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
+          consume();
+        } else {
+          std::cout << "There is no semicolon in the datatype" << std::endl;
+        }
+      }
+    }
+
+    return data_type;
+  }
+
+  /**
      This method parsers and expression
    */
   inline std::optional<NodeExpr> parse_expr() {
     if (peek().has_value() && peek().value().type == TokenType::INT_LIT) {
       return NodeExpr{.int_lit = consume()}; // consuming the literal
-    } else {
-      return {};
+    } else if (peek().has_value() && peek().value().type == TokenType::FLOAT_LIT) {
+      return NodeExpr{.int_lit = consume()}; // consuming the literal
+    } else if (peek().has_value() && peek().value().type == TokenType::DOUBLE_LIT) {
+      return NodeExpr{.int_lit = consume()}; // consuming the literal
     }
+
+    return {};
+  }
+
+  // parsing a string
+  inline std::optional<NodeStr> parse_string() {
+    if (peek().has_value() && peek().value().type == TokenType::STRING_LIT) {
+      return NodeStr{.string_lit = consume()};
+    }
+
+    return {};
   }
 
   // This method look for the next token with an offset of 0, can be incremented
