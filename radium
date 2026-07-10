@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+./build/radium "$1"
+
+# compiling and linking
+mips-linux-gnu-as ./bin/out.asm -o ./bin/out.o
+mips-linux-gnu-ld -o ./bin/out ./bin/out.o
+
+# running the file
+qemu-mips ./bin/out
