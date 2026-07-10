@@ -11,11 +11,11 @@ public:
     output << m_start;
 
     for (const NodeStatement& stmt : m_root.statements) {
-      //TODO: Generate all the statements
-      //output << generate_statements(stmt);
+      //TODO: Generate all the statements output << generate_statements(stmt);
     }
 
-    // TODO: add a generate default_exit method, output << generate_default_exit();
+    // TODO: add a generate default_exit method,
+    output << generate_default_exit();
     return output.str();
   }
 
@@ -33,6 +33,18 @@ private:
     // login the code for the exit
     output << "   li $v0, 4001\n";
     output << "   li $a0, " << node.expr.int_lit.value.value() << "\n";
+    output << "   " << m_syscall << "\n";
+
+    return output.str();
+  }
+
+
+  [[nodiscard]] inline std::string generate_default_exit() const {
+    std::stringstream output;
+
+    output << "   li $v0, 4001\n"; // exit sys
+    output << "   li $a0, 1\n";
+    output << "   li $a1, 0\n";
     output << "   " << m_syscall << "\n";
 
     return output.str();
