@@ -41,15 +41,30 @@ inline std::string read_file_contents(const std::string &filename) {
   return ss.str();
 }
 
-inline void write_contents_into_a_file(const std::string &contents,
-                                const std::string &path = "./bin/out.asm") {
+inline std::filesystem::path derive_output_path(const std::string& source_path) {
+  std::filesystem::path p(source_path);
+  p.replace_extension(".asm");
+  return p;
+}
 
-  std::filesystem::path p(path);
+inline void write_contents_into_a_file(const std::string &contents, const std::optional<std::string> &output_path = std::nullopt,
+const std::optional<std::string> &source_path = std::nullopt) {
+
+  std::filesystem::path p;
+
+  if (output_path.has_value()) {
+    p = *output_path;
+  } else if (source_path.has_value()) {
+    p = derive_output_path(*source_path);
+  } else {
+    p = "./bin/out.asm";
+  }
+
   if (p.has_parent_path()) {
     std::filesystem::create_directories(p.parent_path());
   }
 
-  std::ofstream file(path);
+  std::ofstream file(p);
   if (!file) {
     std::cerr << "Failed to create the file\n";
     exit(EXIT_FAILURE);
