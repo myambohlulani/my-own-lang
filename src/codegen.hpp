@@ -20,7 +20,7 @@ public:
       }
 
       if (std::holds_alternative<NodePrintf>(stmt.var)) {
-        uses_printf_int = true;
+        uses_print_int = true;
       }
 
       output << generate_statements(stmt);
@@ -30,7 +30,7 @@ public:
       output << generate_default_exit();
     }
 
-    if (uses_print) {
+    if (uses_print_int) {
       output << m_data;
       output << "		buffer: .space 12\n";
       output << "		newline: .asciiz \"\n\"\n";
@@ -44,7 +44,7 @@ private:
   const std::string m_start = ".text\n.globl __start\n__start:\n";
   const std::string m_syscall = "syscall\n";
   const std::string m_data = ".data\n";
-  const std::string m_newline = "\n";
+  const std::string m_newline = "\"\n\"";
 
   int m_label_count = 0;
   int m_var_count = 0;
@@ -53,9 +53,9 @@ private:
     std::stringstream output;
 
     // login the code for the exit
-    output << "   li $v0, 4001\n";
-    output << "   li $a0, " << node.expr.int_lit.value.value() << "\n";
-    output << "   " << m_syscall << "\n";
+    output << "		li $v0, 4001\n";
+    output << "		li $a0, " << node.expr.int_lit.value.value() << "\n";
+    output << "		" << m_syscall << "\n";
 
     return output.str();
   }
@@ -97,41 +97,41 @@ private:
   generate_print_int_stmt(const NodePrintf &node) const {
     std::stringstream output;
     output << "print_int:\n";
-    output << "   addi $sp, $sp, -4\n";
-    output << "   sw   $ra, 0($sp)\n";
-    output << "\n";
-    output << "   move $t0, $a0\n";
-    output << "   la   $t1, buffer + 11\n";
-    output << "   li   $t2, 10\n";
-    output << "   li   $t3, 0\n";
-    output << "\n";
+    output << "		addi $sp, $sp, -4\n";
+    output << "		sw $ra, 0($sp)\n";
+    output << m_newline;
+    output << "		move $t0, $a0\n";
+    output << "		la  $t1, buffer + 11\n";
+    output << "		li  $t2, 10\n";
+    output << "		li  $t3, 0\n";
+    output << m_newline;
     output << "convert_loop:\n";
-    output << "   div  $t0, $t2\n";
-    output << "   mfhi $t4\n";
-    output << "   mflo $t0\n";
-    output << "   addi $t4, $t4, '0'\n";
-    output << "   sb   $t4, 0($t1)\n";
-    output << "   addi $t1, $t1, -1\n";
-    output << "   addi $t3, $t3, 1\n";
-    output << "   bnez $t0, convert_loop\n";
-    output << "\n";
-    output << "   addi $t1, $t1, 1\n";
-    output << "\n";
-    output << "   li   $v0, 4004\n";
-    output << "   li   $a0, 1\n";
-    output << "   move $a1, $t1\n";
-    output << "   move $a2, $t3\n";
-    output << "   " << m_syscall << "\n";
-    output << "\n";
-    output << "   li   $v0, 4004\n";
-    output << "   li   $a0, 1\n";
-    output << "   la   $a1, newline\n";
-    output << "   li   $a2, 1\n";
-    output << "   " << m_syscall << "\n";
-    output << "\n";
-    output << "   lw   $ra, 0($sp)\n";
-    output << "   addi $sp, $sp, 4\n";
-    output << "   jr   $ra\n";
+    output << "		div $t0, $t2\n";
+    output << "		mfhi $t4\n";
+    output << "		mflo $t0\n";
+    output << "		addi $t4, $t4, '0'\n";
+    output << "		sb $t4, 0($t1)\n";
+    output << "		addi $t1, $t1, -1\n";
+    output << "		addi $t3, $t3, 1\n";
+    output << "		bnez $t0, convert_loop\n";
+    output << m_newline;
+    output << "		addi $t1, $t1, 1\n";
+    output << m_newline;
+    output << "		li $v0, 4004\n";
+    output << "		li $a0, 1\n";
+    output << "		move $a1, $t1\n";
+    output << "		move $a2, $t3\n";
+    output << "   	" << m_syscall << "\n";
+    output << m_newline;
+    output << "		li $v0, 4004\n";
+    output << " 	li $a0, 1\n";
+    output << "		la $a1, newline\n";
+    output << "		li $a2, 1\n";
+    output << "   	" << m_syscall << "\n";
+    output << m_newline;
+    output << "		lw $ra, 0($sp)\n";
+    output << "		addi $sp, $sp, 4\n";
+    output << "		jr $ra\n";
     return output.str();
   }
 };
