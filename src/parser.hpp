@@ -12,6 +12,15 @@ struct NodeExit {
   NodeExpr expr;
 };
 
+struct NodeIdent {
+  NodeExpr expr;
+  Token name;
+};
+
+struct NodeStr {
+  Token string_lit;
+};
+
 class Parser {
   /**
           Works similar to the Lexer,but goes through each and every token
