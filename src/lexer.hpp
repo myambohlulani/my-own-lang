@@ -46,7 +46,7 @@ enum class TokenType {
   EXIT,
 
   // display
-  PRINT,
+  PRINTF,
 
   // termination of the line
   SEMICOLON,
@@ -88,11 +88,15 @@ public:
         } else if (current_string == "double") {
           tokens.push_back({.type = TokenType::DOUBLE_KEY});
         }
+        //printf
+        else if (current_string == "printf") {
+          tokens.push_back({.type= TokenType::PRINTF});
+        }
         // exit
         else if (current_string == "exit") {
           tokens.push_back({.type = TokenType::EXIT});
         } else {
-          std::cerr << "Maybe an identifier?" << std::endl;
+          tokens.push_back({.type = TokenType::IDENTIFIER}); // for identifier
         }
 
         //	std::cout << current_string << std::endl; // debugging
