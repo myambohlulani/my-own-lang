@@ -3,12 +3,17 @@
 
 #include "./lexer.hpp"
 #include <optional>
+#include <variant>
 
 struct NodeExpr {
   Token int_lit;
 };
 
 struct NodeExit {
+  NodeExpr expr;
+};
+
+struct NodePrintf {
   NodeExpr expr;
 };
 
@@ -19,6 +24,15 @@ struct NodeIdent {
 
 struct NodeStr {
   Token string_lit;
+};
+
+struct NodeStatement {
+  std::variant<NodeExit, NodePrintf> var;
+};
+
+// This will contain all the stetements that will be in the program
+struct NodeProgram {
+  std::vector<NodeStatement> statements;
 };
 
 class Parser {
