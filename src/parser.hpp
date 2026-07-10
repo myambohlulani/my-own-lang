@@ -206,6 +206,19 @@ public:
   */
   inline Token consume() { return m_tokens.at(m_index++); }
 
+  inline std::optional<NodeStatement> parse_statement() {
+    // checking for exit
+    if (peek().has_value() && peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+      if (auto node = parse_exit()) {
+        return NodeStatement{.var = node.value()};
+      }
+    }
+
+    // TODO: Add printf too and parse the int value too
+
+    return {};
+  }
+
 private:
   const std::vector<Token> m_tokens;
   size_t m_index = 0;
