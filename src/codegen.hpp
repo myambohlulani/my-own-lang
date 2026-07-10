@@ -11,7 +11,8 @@ public:
     output << m_start;
 
     for (const NodeStatement& stmt : m_root.statements) {
-      //TODO: Generate all the statements output << generate_statements(stmt);
+      //TODO: Generate all the statements
+      output << generate_statements(stmt);
     }
 
     // TODO: add a generate default_exit method,
@@ -28,7 +29,6 @@ private:
 
   [[nodiscard]] inline std::string generate_exit(const NodeExit& node) const {
     std::stringstream output;
-    output << m_start; // start part
 
     // login the code for the exit
     output << "   li $v0, 4001\n";
@@ -38,6 +38,27 @@ private:
     return output.str();
   }
 
+  [[nodiscard]] inline std::string generate_statements(const NodeStatement& stmt) const {
+    std::stringstream output;
+
+    struct visit_statement {
+      const Generator* gen;
+      std::stringstream& output;
+
+      void operator()(const NodeExit& node) const {
+        output << gen -> generate_exit(node);
+      }
+
+      void operator()(const NodePrintf& node) const {
+        output << gen -> generate_print_int_stmt(node);
+      }
+
+      // TODO: Create if statements and more
+    };
+
+    std::visit(visit_statement{this, output}, stmt.var);
+    return output.str();
+  }
 
   [[nodiscard]] inline std::string generate_default_exit() const {
     std::stringstream output;
