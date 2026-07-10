@@ -37,6 +37,17 @@ private:
 
     return output.str();
   }
+
+  [[nodiscard]] inline std::string generate_print_int_stmt(const NodePrintf& node) const {
+    std::stringstream output;
+    output << "   li $v0, 4004\n";
+    output << "   li $a0, 1\n"; // file descriptor stdout
+    output << "   li $a1, " << node.expr.int_lit.value.value() << "\n" ; // TODO: print the integer only
+    output << "   li $a2, 8\n"; // byte for the number
+    output << "   " << m_syscall << "\n";
+    return output.str();
+  }
+
 };
 
 #endif // CODEGEN_H
