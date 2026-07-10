@@ -47,11 +47,11 @@ public:
    * This method parse the program as a whole instead of calling the methods one by one but rather all of them depending on the tokens
    */
   [[nodiscard]] inline std::optional<NodeProgram> parse() {
-    std::optional<NodeProgram> program;
+    NodeProgram program;
     // parsing stuff here
     while (peek().has_value()) {
-      if (auto statement = parse_statement()) {
-        program -> statements.push_back(statement.value());
+      if (const auto statement = parse_statement()) {
+        program.statements.push_back(statement.value());
       } else {
         std::cerr << "These statements are invalid" << std::endl;
         exit(EXIT_FAILURE);
@@ -215,7 +215,11 @@ public:
     }
 
     // TODO: Add printf too and parse the int value too
-
+    else if (peek().has_value() && peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+      if (auto node = parse_printf()) {
+        return NodeStatement{.var = node.value()};
+      }
+    }
     return {};
   }
 
