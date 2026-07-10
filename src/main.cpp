@@ -36,24 +36,24 @@ int main(int argc, char *argv[]) {
     Lexer lex(std::move(contents));
     Lexer *lexer = &lex;
 
-    std::vector<Token> tokens = lexer->tokenize(); // tokens
+    const std::vector<Token> tokens = lexer->tokenize(); // tokens
 
     // Parser
     Parser par(tokens);
     Parser *parser = &par;
-    std::optional<NodeExit> tree = parser -> parse_exit();
+    const std::optional<NodeProgram> tree = parser -> parse();
 
     if (!tree.has_value()) {
-      std::cerr << "there exists no exit statement" << std::endl;
+      std::cerr << "The program is invalid haha:-)" << std::endl;
       exit(EXIT_FAILURE);
     }
 
     // generator
-    Generator gen(tree.value());
-    Generator *generator = &gen;
+    const Generator gen(tree.value()); // TODO: Change this
+    const Generator *generator = &gen;
 
     // generating the code
-    std::string strs = generator->generate();
+    const std::string strs = generator-> generate();
     write_contents_into_a_file(strs);
   }
 
