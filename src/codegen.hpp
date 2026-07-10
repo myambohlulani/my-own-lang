@@ -9,9 +9,9 @@ public:
   [[nodiscard]] inline std::string generate() const {
     std::stringstream output;
     output << m_start; // start part
-    output << "	mov rax, 60\n";
-    output << " mov rdi, " << m_root.expr.int_lit.value.value() << "\n";
-    output << " " << m_syscall;
+    output << "   mov rax, 60\n";
+    output << "   mov rdi, " << m_root.expr.int_lit.value.value() << "\n";
+    output << "   " << m_syscall;
 
     return output.str();
   }
