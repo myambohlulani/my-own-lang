@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 ./build/radium ./tests/main.hlx
-nasm -f elf64 ./bin/out.asm -o ./bin/out.o
-ld ./bin/out.o -o ./bin/app
+mips-linux-gnu-as ./bin/out.asm -o ./bin/out.o
+mips-linux-gnu-ld ./bin/out.o -o ./bin/app
 
-./bin/app
+qemu-mips ./bin/app
 echo $?
