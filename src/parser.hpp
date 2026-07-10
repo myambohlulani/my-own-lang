@@ -43,10 +43,26 @@ class Parser {
 public:
   inline explicit Parser(const std::vector<Token> &tokens) : m_tokens(tokens) {}
 
+  /**
+   * This method parse the program as a whole instead of calling the methods one by one but rather all of them depending on the tokens
+   */
+  [[nodiscard]] inline std::optional<NodeProgram> parse() {
+    std::optional<NodeProgram> program;
+    // parsing stuff here
+    while (peek().has_value()) {
+      if (auto statement = parse_statement()) {
+        program -> statements.push_back(statement.value());
+      } else {
+        std::cerr << "These statements are invalid" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+    }
+
+    return program;
+  }
+
   inline std::optional<NodeExit> parse_exit() {
     std::optional<NodeExit> exit_node {};
-
-    while (peek().has_value()) {
       if (peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
         consume(); // consume exit
         consume(); // consume the next open parentheses
