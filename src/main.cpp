@@ -18,6 +18,7 @@ int main(int argc, char *argv[]) {
   // checking for correct extension
   std::string extension;
   const std::string filename = argv[1];
+  // const std::string filename = "../hello.hlx"; // for debuging
   std::string contents;
 
   // checking for correct extension

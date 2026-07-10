@@ -88,8 +88,8 @@ public:
         } else if (current_string == "double") {
           tokens.push_back({.type = TokenType::DOUBLE_KEY});
         }
-        //printf
-        else if (current_string == "printf") {
+        //printf or print both perform the same function
+        else if (current_string == "printf" || current_string == "print") {
           tokens.push_back({.type= TokenType::PRINTF});
         }
         // exit
@@ -123,8 +123,22 @@ public:
         tokens.push_back({.type = TokenType::SEMICOLON});
         pass_curr_char(); // consume
         // std::cout << "Semicolon" << std::endl; // for debugging
-      }
+      } else if (curr_char == '"') {
+        pass_curr_char();
+        if (look_next_character().has_value()) {
+          std::string curr{};
+          while (look_next_character().has_value() && look_next_character().value() != '"') {
+            curr.push_back(pass_curr_char());
+          }
 
+          // consume the close string value
+          if (look_next_character().has_value() && look_next_character().value() == '"') {
+            pass_curr_char();
+          }
+
+          tokens.push_back({.type = TokenType::STRING_LIT, .value = curr});
+        }
+      }
       // symbols
       else if (curr_char == '{') {
         tokens.push_back({.type = TokenType::OP_CURLY});

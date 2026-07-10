@@ -32,9 +32,18 @@ public:
 
     if (uses_print_int) {
       output << generate_print_int_func();
+    }
+
+    if (uses_print_int || !m_string_literals.empty()) {
       output << m_data;
       output << "		buffer: .space 12\n";
       output << "		newline: .asciiz \"\\n\"" << m_newline;
+
+      for (size_t i = 0; i < m_string_literals.size(); ++i) {
+        output << "		str" << i << ": .asciiz \"" << m_string_literals[i]
+               << "\"\n";
+        output << "		str" << i << "_len = . - str" << i << "\n";
+      }
     }
 
     return output.str();
@@ -46,9 +55,9 @@ private:
   const std::string m_syscall = "		syscall\n";
   const std::string m_data = ".data\n";
   const std::string m_newline = "\n";
-
+  mutable std::vector<std::string> m_string_literals; // for print values
   int m_label_count = 0;
-  int m_var_count = 0;
+  mutable int m_var_count = 0;
 
   [[nodiscard]] inline std::string generate_exit(const NodeExit &node) const {
     std::stringstream output;
@@ -74,7 +83,7 @@ private:
       }
 
       void operator()(const NodePrintf &node) const {
-        output << gen->generate_print_int_stmt(node);
+        output << gen -> generate_printf(node);
       }
 
       // TODO: Create if statements and more
@@ -90,6 +99,21 @@ private:
     output << "		li $v0, 4001\n"; // exit sys
     output << "		li $a0, 0\n";
     output << m_syscall << "\n";
+
+    return output.str();
+  }
+
+  [[nodiscard]] inline std::string generate_print_string(const std::string &value) const {
+    std::stringstream output;
+
+    int idx = m_var_count++;
+    m_string_literals.push_back(value);
+    output << "		li $v0, 4004\n";
+    output << "		li $a0, 1\n";
+    output << "		la $a1, str" << idx << "\n";
+    output << "		li $a2, str" << idx << "_len\n";
+    output << m_syscall;
+    output << m_newline;
 
     return output.str();
   }
@@ -139,12 +163,34 @@ private:
   [[nodiscard]] inline std::string
   generate_print_int_stmt(const NodePrintf &node) const {
     std::stringstream output;
-    output << "		li $a0, " << node.expr.int_lit.value.value() << "\n";
+
+    if (!std::holds_alternative<NodeExpr>(node.expr)) {
+      // not an integer
+      exit(EXIT_FAILURE);
+    }
+
+    const NodeExpr& expr = std::get<NodeExpr>(node.expr);
+    output << "		li $a0, " << expr.int_lit.value.value() << "\n";
     output << "		jal print_int\n";
     output << m_newline;
 
     return output.str();
   }
+
+  [[nodiscard]]  inline std::string generate_printf(const NodePrintf &node) const {
+    if (std::holds_alternative<NodeExpr>(node.expr)) {
+      return generate_print_int_stmt(node);
+    }
+
+    if (std::holds_alternative<NodeStr>(node.expr)) {
+      const NodeStr& str = std::get<NodeStr>(node.expr);
+      return generate_print_string(str.string_lit.value.value());
+    }
+
+    std::cerr << "print(): unsupported expression type\n";
+    exit(EXIT_FAILURE);
+  }
+
 };
 
 #endif // CODEGEN_H

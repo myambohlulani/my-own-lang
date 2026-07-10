@@ -9,21 +9,21 @@ struct NodeExpr {
   Token int_lit;
 };
 
+struct NodeStr {
+  Token string_lit;
+};
+
 struct NodeExit {
   NodeExpr expr;
 };
 
 struct NodePrintf {
-  NodeExpr expr;
+  std::variant<NodeExpr, NodeStr> expr;
 };
 
 struct NodeIdent {
   NodeExpr expr;
   Token name;
-};
-
-struct NodeStr {
-  Token string_lit;
 };
 
 struct NodeStatement {
@@ -101,8 +101,12 @@ public:
 
         if (const auto node_expr = parse_expr()) {
           printf_node  = NodePrintf {.expr = node_expr.value()};
+        } else if (const auto node_str_expr = parse_string()) {
+          printf_node = NodePrintf {.expr = node_str_expr.value()};
+        } else {
+          std::cerr << "Did you forget to include a string or value inside your print?" << std::endl;
+          exit(EXIT_FAILURE);
         }
-
         // close parentheses
         if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
           consume();
