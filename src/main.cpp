@@ -17,7 +17,7 @@ int main(int argc, char *argv[]) {
 
   // checking for correct extension
   std::string extension;
-  std::string filename = argv[1];
+  const std::string filename = argv[1];
   std::string contents;
 
   // checking for correct extension
@@ -54,6 +54,10 @@ int main(int argc, char *argv[]) {
 
     // generating the code
     const std::string strs = generator-> generate();
+    if (strs.empty()) {
+      exit(EXIT_FAILURE);
+    }
+
     write_contents_into_a_file(strs);
   }
 
