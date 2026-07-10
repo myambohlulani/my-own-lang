@@ -31,9 +31,10 @@ public:
     }
 
     if (uses_print_int) {
+      output << generate_print_int_func();
       output << m_data;
       output << "		buffer: .space 12\n";
-      output << "		newline: .asciiz \"\n\"\n";
+      output << "		newline: .asciiz \"\\n\"" << m_newline;
     }
 
     return output.str();
@@ -42,9 +43,9 @@ public:
 private:
   const NodeProgram m_root{};
   const std::string m_start = ".text\n.globl __start\n__start:\n";
-  const std::string m_syscall = "syscall\n";
+  const std::string m_syscall = "		syscall\n";
   const std::string m_data = ".data\n";
-  const std::string m_newline = "\"\n\"";
+  const std::string m_newline = "\n";
 
   int m_label_count = 0;
   int m_var_count = 0;
@@ -55,7 +56,7 @@ private:
     // login the code for the exit
     output << "		li $v0, 4001\n";
     output << "		li $a0, " << node.expr.int_lit.value.value() << "\n";
-    output << "		" << m_syscall << "\n";
+    output << m_syscall << "\n";
 
     return output.str();
   }
@@ -86,15 +87,14 @@ private:
   [[nodiscard]] inline std::string generate_default_exit() const {
     std::stringstream output;
 
-    output << "   li $v0, 4001\n"; // exit sys
-    output << "   li $a0, 0\n";
-    output << "   " << m_syscall << "\n";
+    output << "		li $v0, 4001\n"; // exit sys
+    output << "		li $a0, 0\n";
+    output << m_syscall << "\n";
 
     return output.str();
   }
 
-  [[nodiscard]] inline std::string
-  generate_print_int_stmt(const NodePrintf &node) const {
+  [[nodiscard]] inline std::string generate_print_int_func() const {
     std::stringstream output;
     output << "print_int:\n";
     output << "		addi $sp, $sp, -4\n";
@@ -121,17 +121,28 @@ private:
     output << "		li $a0, 1\n";
     output << "		move $a1, $t1\n";
     output << "		move $a2, $t3\n";
-    output << "   	" << m_syscall << "\n";
+    output << m_syscall;
     output << m_newline;
     output << "		li $v0, 4004\n";
-    output << " 	li $a0, 1\n";
+    output << "		li $a0, 1\n";
     output << "		la $a1, newline\n";
     output << "		li $a2, 1\n";
-    output << "   	" << m_syscall << "\n";
+    output << m_syscall;
     output << m_newline;
     output << "		lw $ra, 0($sp)\n";
     output << "		addi $sp, $sp, 4\n";
     output << "		jr $ra\n";
+
+    return output.str();
+  }
+
+  [[nodiscard]] inline std::string
+  generate_print_int_stmt(const NodePrintf &node) const {
+    std::stringstream output;
+    output << "		li $a0, " << node.expr.int_lit.value.value() << "\n";
+    output << "		jal print_int\n";
+    output << m_newline;
+
     return output.str();
   }
 };
