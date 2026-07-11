@@ -162,7 +162,7 @@ private:
   const std::string m_str;
   int m_curr_index = 0;
 
-  [[nodiscard]] std::optional<char> look_next_character(const int &ahead = 0) const {
+  [[nodiscard]] inline std::optional<char> look_next_character(const int &ahead = 0) const {
     /**
             This method peaks characters ahead, 1 is for default and you can
        specify the offset It does not change the contents of the class hence
