@@ -97,6 +97,11 @@ private:
       }
 
       // TODO: Create if statements and more
+
+      // variables declarations
+      void operator()(const NodeVarDeclar &node) const {
+        output << gen -> generate_variable_declar(node);
+      }
     };
 
     std::visit(visit_statement{this, output}, stmt.var);
@@ -224,6 +229,48 @@ private:
 
     std::cerr << "print(): unsupported expression type\n";
     exit(EXIT_FAILURE);
+  }
+
+  /**
+   * This method generates the code for the variable declaration
+   */
+  [[nodiscard]] inline std::string generate_variable_declar(const NodeVarDeclar &node) const {
+    const std::string name = node.var_name.value.value();
+
+    // creation of strings var
+    if (node.data_type.type == TokenType::STRING_KEY) {
+      if (!std::holds_alternative<NodeStr>(node.value)) {
+        std::cerr << "The type does not match for variable \"" << name << "\" It is supposed to be string." << std::endl;
+        exit(EXIT_FAILURE);
+      }
+
+      // getting the actual value
+      const std::string &str_value = std::get<NodeStr>(node.value).string_lit.value.value();
+
+      const size_t index= m_string_literals.size();
+      m_string_literals.push_back(str_value);
+      m_str_vars[name] = "str" + std::to_string(index);
+
+      return "";
+    }
+
+    // then it is a numeric type data type
+    if (!std::holds_alternative<NodeExpr>(node.value)) {
+      std::cerr << "The type is supposed to be numeric for variable \" " << name << "\"." << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    const NodeExpr &expr = std::get<NodeExpr>(node.value);
+    if (!std::holds_alternative<NodeLiteral>(expr.value)) {
+      std::cerr << "Cannot declare variable name: \"" << name <<  "\" again." << std::endl;
+      exit(EXIT_FAILURE);
+    }
+
+    // creating the variable and store it to check if it works
+    const std::string init_val = std::get<NodeLiteral>(expr.value).int_lit.value.value();
+    m_int_vars[name] = name;
+    m_int_var_declarations.push_back(name + ": .word " + init_val + "\n"); // ready for assembly
+    return "";
   }
 };
 
