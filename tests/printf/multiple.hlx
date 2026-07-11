@@ -1,0 +1,5 @@
+print("Hello, Hlulani");
+printf("Hello, Radium");
+print("I am 19 years old!");
+printf(2026);
+printf("2026/july/11");

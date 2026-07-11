@@ -1,0 +1,14 @@
+int age{19};
+print(age)
+
+int num{2026};
+printf(num);
+
+string name{"Hlulani"};
+string surname{"Myambo"}
+
+printf(name);
+print(surname);
+
+string msg{"Hello, Welcome to Radium language"};
+print(msg);
