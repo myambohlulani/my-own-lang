@@ -7,7 +7,7 @@
 
 // This is for integers/float/double literal
 struct NodeLiteral {
-  Token num_literal;;
+  Token int_lit;;
 };
 
 // This is responsible for previous declaration of a certain variable
