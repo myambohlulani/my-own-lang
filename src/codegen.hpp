@@ -64,12 +64,17 @@ private:
   int m_label_count = 0;
   mutable int m_var_count = 0;
 
+  // variables maps
+  mutable std::unordered_map<std::string,std::string> m_str_vars; // for strings
+  mutable std::unordered_map<std::string,std::string> m_int_vars; // for ints
+  mutable std::vector<std::string> m_int_var_declarations;
+
   [[nodiscard]] inline std::string generate_exit(const NodeExit &node) const {
     std::stringstream output;
 
     // login the code for the exit
     output << "		li $v0, 4001\n";
-    output << "		li $a0, " << node.expr.int_lit.value.value() << "\n";
+    output << emit_load_int(node.expr, "$a0");
     output << m_syscall << "\n";
 
     return output.str();
@@ -124,6 +129,29 @@ private:
     return output.str();
   }
 
+  // this method loads a value
+  [[nodiscard]] inline std::string emit_load_int(const NodeExpr &expr, const std::string &reg) const {
+    std::stringstream out;
+
+    std::visit([&](auto &&v) {
+          using T = std::decay_t<decltype(v)>;
+          if constexpr (std::is_same_v<T, NodeLiteral>) {
+            out << "		li " << reg << ", " << v.int_lit.value.value() << "\n";
+          } else if constexpr (std::is_same_v<T, NodeIdentExpr>) {
+            const std::string name = v.ident.value.value();
+            const auto it = m_int_vars.find(name);
+            if (it == m_int_vars.end()) {
+              std::cerr << "Undeclared (or non-numeric) variable used: " << name << "\n";
+              exit(EXIT_FAILURE);
+            }
+            out << "		lw " << reg << ", " << it->second << "\n";
+          }
+        },
+        expr.value);
+
+    return out.str();
+  }
+
   [[nodiscard]] inline std::string generate_print_int_func() const {
     std::stringstream output;
     output << "print_int:\n";
@@ -176,7 +204,7 @@ private:
     }
 
     const NodeExpr &expr = std::get<NodeExpr>(node.expr);
-    output << "		li $a0, " << expr.int_lit.value.value() << "\n";
+    output << emit_load_int(expr, "$a0");
     output << "		jal print_int\n";
     output << m_newline;
 
