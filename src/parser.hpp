@@ -218,7 +218,11 @@ public:
    */
   inline std::optional<NodeExpr> parse_expr() {
     if (peek().has_value() && (peek().value().type == TokenType::INT_LIT || peek().value().type == TokenType::FLOAT_LIT || peek().value().type == TokenType::DOUBLE_LIT)) {
-      return NodeExpr {.value = NodeLiteral{.int_lit = consume()}}; // consuming the literal
+      return NodeExpr{.value = NodeLiteral{.int_lit = consume()}};
+    }
+    // for identifier
+    else if (peek().has_value() && peek().value().type == TokenType::IDENTIFIER) {
+      return NodeExpr{.value = NodeIdentExpr{.ident = consume()}};
     }
 
     return {};
