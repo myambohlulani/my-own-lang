@@ -73,8 +73,7 @@ public:
       if (std::isalpha(curr_char)) {
         current_string.push_back(pass_curr_char());
 
-        while (look_next_character().has_value() &&
-               std::isalnum(look_next_character().value())) {
+        while (look_next_character().has_value() && (std::isalnum(look_next_character().value()) || look_next_character().value() == '_')) {
           current_string.push_back(pass_curr_char());
         }
 
@@ -96,13 +95,10 @@ public:
         else if (current_string == "exit") {
           tokens.push_back({.type = TokenType::EXIT});
         } else {
-          tokens.push_back({.type = TokenType::IDENTIFIER}); // for identifier
+          tokens.push_back({.type=TokenType::IDENTIFIER, .value = current_string});
         }
 
-        //	std::cout << current_string << std::endl; // debugging
-
         current_string.clear(); // clearing the string
-
       } else if (std::isdigit(curr_char)) {
         current_string.push_back(pass_curr_char());
 
