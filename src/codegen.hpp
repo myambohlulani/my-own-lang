@@ -20,7 +20,10 @@ public:
       }
 
       if (std::holds_alternative<NodePrintf>(stmt.var)) {
-        uses_print_int = true;
+        const NodePrintf &printf_node = std::get<NodePrintf>(stmt.var);
+        if (std::holds_alternative<NodeExpr>(printf_node.expr)) {
+          uses_print_int = true;
+        }
       }
 
       output << generate_statements(stmt);
@@ -40,9 +43,9 @@ public:
       output << "		newline: .asciiz \"\\n\"" << m_newline;
 
       for (size_t i = 0; i < m_string_literals.size(); ++i) {
-        output << "		str" << i << ": .asciiz \"" << m_string_literals[i]
-               << "\"\n";
-        output << "		str" << i << "_len = . - str" << i << "\n";
+        output << "		str" << i << ": .asciiz \""
+               << m_string_literals[i] << "\\n\"";
+        output << "\n		str" << i << "_len = . - str" << i << "\n";
       }
     }
 
@@ -83,7 +86,7 @@ private:
       }
 
       void operator()(const NodePrintf &node) const {
-        output << gen -> generate_printf(node);
+        output << gen->generate_printf(node);
       }
 
       // TODO: Create if statements and more
@@ -103,7 +106,8 @@ private:
     return output.str();
   }
 
-  [[nodiscard]] inline std::string generate_print_string(const std::string &value) const {
+  [[nodiscard]] inline std::string
+  generate_print_string(const std::string &value) const {
     std::stringstream output;
 
     int idx = m_var_count++;
@@ -169,7 +173,7 @@ private:
       exit(EXIT_FAILURE);
     }
 
-    const NodeExpr& expr = std::get<NodeExpr>(node.expr);
+    const NodeExpr &expr = std::get<NodeExpr>(node.expr);
     output << "		li $a0, " << expr.int_lit.value.value() << "\n";
     output << "		jal print_int\n";
     output << m_newline;
@@ -177,20 +181,20 @@ private:
     return output.str();
   }
 
-  [[nodiscard]]  inline std::string generate_printf(const NodePrintf &node) const {
+  [[nodiscard]] inline std::string
+  generate_printf(const NodePrintf &node) const {
     if (std::holds_alternative<NodeExpr>(node.expr)) {
       return generate_print_int_stmt(node);
     }
 
     if (std::holds_alternative<NodeStr>(node.expr)) {
-      const NodeStr& str = std::get<NodeStr>(node.expr);
+      const NodeStr &str = std::get<NodeStr>(node.expr);
       return generate_print_string(str.string_lit.value.value());
     }
 
     std::cerr << "print(): unsupported expression type\n";
     exit(EXIT_FAILURE);
   }
-
 };
 
 #endif // CODEGEN_H
