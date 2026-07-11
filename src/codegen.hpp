@@ -1,6 +1,8 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 #include "./parser.hpp"
+#include <unordered_map>
+#include <vector>
 
 class Generator {
 public:
