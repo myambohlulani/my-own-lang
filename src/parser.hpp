@@ -82,6 +82,9 @@ public:
     return program;
   }
 
+  /**
+   * This method parses the exit statement
+   */
   inline std::optional<NodeExit> parse_exit() {
     std::optional<NodeExit> exit_node {};
       if (peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
@@ -231,6 +234,9 @@ public:
   */
   inline Token consume() { return m_tokens.at(m_index++); }
 
+  /**
+   * This method parses the statement, any statement
+   */
   inline std::optional<NodeStatement> parse_statement() {
     // checking for exit
     if (peek().has_value() && peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
