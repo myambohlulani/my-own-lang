@@ -44,6 +44,11 @@ public:
       output << "		buffer: .space 12\n";
       output << "		newline: .asciiz \"\\n\"" << m_newline;
 
+      // adding variables into the .data section
+      for (const std::string &var_name_data : m_int_var_declarations) {
+        output << "             " << var_name_data << "\n";
+      }
+
       for (size_t i = 0; i < m_string_literals.size(); ++i) {
         output << "		str" << i << ": .asciiz \""
                << m_string_literals[i] << "\\n\"";
