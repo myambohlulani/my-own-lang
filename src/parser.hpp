@@ -153,59 +153,72 @@ public:
    * This method parse the data type
    * /
    */
-  inline std::optional<NodeIdent> parse_data_type() {
-    std::optional<NodeIdent> data_type {};
+  inline std::optional<NodeVarDeclar> parse_variable_declar() {
+    std::optional<NodeVarDeclar> declaration{};
 
-    while (peek().has_value()) {
-      if ((peek().value().type == TokenType::INT_KEY ||
+    // checking the type of the variable that is about to be created
+    const bool is_keyword_type = peek().has_value() &&
+        (peek().value().type == TokenType::INT_KEY ||
         peek().value().type == TokenType::STRING_KEY ||
         peek().value().type == TokenType::FLOAT_KEY ||
-        peek().value().type == TokenType::DOUBLE_KEY) && peek(1).has_value() && peek(1).value().type == TokenType::OP_CURLY) {
+        peek().value().type == TokenType::DOUBLE_KEY);
+
+    // it must have a name
+    const bool contains_identifier = peek(1).has_value() && peek(1).value().type == TokenType::IDENTIFIER;
+    const bool op_has_curly = peek(2).has_value() && peek(2).value().type == TokenType::OP_CURLY;
+
+    // has keyword followed by name and open curly i.e string name{
+    if (is_keyword_type && contains_identifier && op_has_curly) {
+      Token type_token = consume();
+      Token ident_token = consume();
+      // consume curly brace -> open
+      consume();
+
+      // parsing string
+      if (type_token.type == TokenType::STRING_KEY) {
+        if (const auto str_value = parse_string()) {
+          declaration = NodeVarDeclar{.data_type = type_token, .var_name = ident_token, .value = str_value.value()};
+        } else {
+          std::cerr << "Your variable type is String but the value stored is different" << std::endl;
+          exit(EXIT_FAILURE);
+        }
+      }
+      // then it is not a string it either int/float or double
+      else {
+        if (auto int_value = parse_expr()) {
+          declaration = NodeVarDeclar{.data_type = type_token, .var_name = ident_token, .value = int_value.value()};
+        } else {
+          // add a default value of 0 since it is an integer
+          std::cerr << "The value that should be stored is int" << std::endl;
+          exit(EXIT_FAILURE);
+        }
+      }
+
+      // close curly
+      if (peek().has_value() && peek().value().type == TokenType::CL_CURLY) {
         consume();
+      } else {
+        std::cerr << "There is no close curly brace for the creation of data type" << std::endl;
+        exit(EXIT_FAILURE);
+      }
 
-        if (const auto int_data_type_expr = parse_expr()) {
-          data_type  = NodeIdent {.expr = int_data_type_expr.value()};
-        }
-        // float
-        else if (const auto float_data_type_expr = parse_expr()) {
-          data_type  = NodeIdent {.expr = float_data_type_expr.value()};
-        }
-        // double
-        else if (const auto double_data_type_expr = parse_expr()) {
-          data_type  = NodeIdent {.expr = double_data_type_expr.value()};
-        }
-        // string
-
-
-        // check for closed curly brace
-
-        if (peek().has_value() && peek().value().type == TokenType::CL_CURLY) {
-          consume();
-        } else {
-         std::cout << "There is no close parentheses in the data_type" << std::endl;
-        }
-
-        if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
-          consume();
-        } else {
-          std::cout << "There is no semicolon in the datatype" << std::endl;
-        }
+      if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
+        consume();
+      } else {
+        std::cerr << "There is no semicolon for your variable creation" << std::endl;
+        exit(EXIT_FAILURE);
       }
     }
 
-    return data_type;
+    return declaration;
   }
 
   /**
      This method parsers and expression
    */
   inline std::optional<NodeExpr> parse_expr() {
-    if (peek().has_value() && peek().value().type == TokenType::INT_LIT) {
-      return NodeExpr{.int_lit = consume()}; // consuming the literal
-    } else if (peek().has_value() && peek().value().type == TokenType::FLOAT_LIT) {
-      return NodeExpr{.int_lit = consume()}; // consuming the literal
-    } else if (peek().has_value() && peek().value().type == TokenType::DOUBLE_LIT) {
-      return NodeExpr{.int_lit = consume()}; // consuming the literal
+    if (peek().has_value() && (peek().value().type == TokenType::INT_LIT || peek().value().type == TokenType::FLOAT_LIT || peek().value().type == TokenType::DOUBLE_LIT)) {
+      return NodeExpr {.value = NodeLiteral{.int_lit = consume()}}; // consuming the literal
     }
 
     return {};
@@ -245,11 +258,14 @@ public:
       }
     }
 
-    // TODO: Add printf too and parse the int value too
     else if (peek().has_value() && peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
       if (auto node = parse_printf()) {
         return NodeStatement{.var = node.value()};
       }
+    }
+    // variable declaration
+    else if (auto node = parse_variable_declar()) {
+      return NodeStatement{.var = node.value()};
     }
     return {};
   }
