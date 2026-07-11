@@ -5,29 +5,50 @@
 #include <optional>
 #include <variant>
 
-struct NodeExpr {
-  Token int_lit;
+// This is for integers/float/double literal
+struct NodeLiteral {
+  Token num_literal;;
 };
 
+// This is responsible for previous declaration of a certain variable
+struct NodeIdentExpr {
+  Token ident;
+};
+
+// expr will either be ref or literal
+struct NodeExpr {
+  std::variant<NodeLiteral, NodeIdentExpr> value;
+};
+
+// string
 struct NodeStr {
   Token string_lit;
 };
 
+// exit statement
 struct NodeExit {
   NodeExpr expr;
 };
 
+// print statement
 struct NodePrintf {
   std::variant<NodeExpr, NodeStr> expr;
 };
 
-struct NodeIdent {
-  NodeExpr expr;
-  Token name;
+/**
+ * This is responsible for declaration of variables
+ */
+struct NodeVarDeclar {
+  Token data_type; // type
+  Token var_name; // variable name
+  std::variant<NodeExpr, NodeStr> value; // the value the type contains
 };
 
+/**
+ * This is responsible for any statement in the code
+ */
 struct NodeStatement {
-  std::variant<NodeExit, NodePrintf> var;
+  std::variant<NodeExit, NodePrintf, NodeVarDeclar> var;
 };
 
 // This will contain all the stetements that will be in the program
