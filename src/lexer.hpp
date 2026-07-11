@@ -148,8 +148,16 @@ public:
       } else if (curr_char == ')') {
         tokens.push_back({.type = TokenType::CL_PAREN});
         pass_curr_char();
+      }
+      // comments
+      else if ((curr_char == '/' && look_next_character(1).has_value() && look_next_character(1).value() == '/') ||
+              (curr_char == '-' && look_next_character(1).has_value() && look_next_character(1).value() == '-') ||
+              curr_char == '#') {
+        while (look_next_character().has_value() && look_next_character().value() != '\n') {
+          pass_curr_char();
+        }
       } else {
-        std::cerr << "Hahaha error" << std::endl; // error for debugging for now
+        std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
         pass_curr_char(); // consume to avoid infinite loop
       }
     }
