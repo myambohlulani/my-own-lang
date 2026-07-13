@@ -44,6 +44,11 @@ struct NodeVarDeclar {
   std::variant<NodeExpr, NodeStr> value; // the value the type contains
 };
 
+// This is responsible for if-clause
+// struct NodeIfstmt {
+//   std::variant<NodeExpr, bool, Token> var;
+// };
+
 /**
  * This is responsible for any statement in the code
  */
@@ -153,10 +158,10 @@ private:
     return printf_node;
   }
 
-   /**
-   * This method parse the data type
-   * /
-   */
+  /**
+  * This method parse the data type
+  * /
+  */
   inline std::optional<NodeVarDeclar> parse_variable_declar() {
     std::optional<NodeVarDeclar> declaration{};
 
@@ -222,19 +227,27 @@ private:
    */
   inline std::optional<NodeStatement> parse_statement() {
     // checking for exit
-    if (peek().has_value() && peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+    if (const bool &is_open_parentheses = peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN; peek().has_value() && peek().value().type == TokenType::EXIT && is_open_parentheses) {
       if (auto node = parse_exit()) {
         return NodeStatement{.var = node.value()};
       }
     }
 
-    else if (peek().has_value() && peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+    else if (peek().has_value() && peek().value().type == TokenType::PRINTF && is_open_parentheses) {
       if (auto node = parse_printf()) {
         return NodeStatement{.var = node.value()};
       }
     }
     // variable declaration
     else if (auto node = parse_variable_declar()) {
+      return NodeStatement{.var = node.value()};
+    }
+    // parsing if statements
+    else if (peek().has_value() && peek().value().type == TokenType::IF_KEY) {
+      return NodeStatement{.var = node.value()};
+    }
+    // parsing else statement
+    else if (peek().has_value() && peek().value().type == TokenType::ELSE_KEY) {
       return NodeStatement{.var = node.value()};
     }
     return {};
