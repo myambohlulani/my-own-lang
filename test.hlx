@@ -1,0 +1,8 @@
+int age{19};
+print(age);
+
+int num{11};
+print(num);
+
+int age{18};
+print(age);
