@@ -51,7 +51,10 @@ private:
   std::string m_syscall = "   syscall\n";
   std::string m_global = "global _start\n_start:\n";
 
-  [[nodiscard]] inline std::string generate_exit(const NodeExit &node) const {
+  [[nodiscard]] inline static std::string generate_exit(const NodeExit &node) {
+    /**
+     * This method generates the exit code for the file
+     */
     std::stringstream output;
     const auto &exit_stmt = std::get<NodeLiteral>(node.expr.value);
     output << EXIT_STATUS_CODE;
@@ -79,6 +82,9 @@ private:
 
   [[nodiscard]] inline std::string
   generate_statements(const NodeStatement &stmt) const {
+    /**
+     * This method generates stataments into x86
+     */
     std::stringstream output;
 
     struct visit_statement {
@@ -124,6 +130,18 @@ private:
   }
 
   [[nodiscard]] inline std::string generate_print_int() const {
+    /**
+     * This method is responsible for printing integers
+     */
+    std::stringstream output;
+
+    return output.str();
+  }
+
+  [[nodiscard]] inline std::string generate_print_string(std::string &value) const {
+    /**
+     * This method is responsible for printing strings
+     */
     std::stringstream output;
 
     return output.str();
