@@ -32,9 +32,6 @@ enum class TokenType {
   OP_CURLY,
   CL_CURLY,
 
-  // Comments
-  COMMENT,
-
   // literals
   INT_LIT,
   STRING_LIT,
@@ -68,9 +65,7 @@ public:
     std::vector<Token> tokens{};
 
     while (look_next_character().has_value()) {
-      char curr_char = look_next_character().value();
-
-      if (std::isalpha(curr_char)) {
+      if (char curr_char = look_next_character().value(); std::isalpha(curr_char)) {
         current_string.push_back(pass_curr_char());
 
         while (look_next_character().has_value() && (std::isalnum(look_next_character().value()) || look_next_character().value() == '_')) {
