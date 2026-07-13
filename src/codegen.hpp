@@ -107,6 +107,11 @@ private:
       void operator()(const NodeVarDeclar &node) const {
         output << gen -> generate_variable_declar(node);
       }
+
+        // TODO: Add code generation for the if statement
+      // void operator()(const NodeIfstmt &node) const {
+      //   output << gen -> generate_if_stmt(node);
+      // }
     };
 
     std::visit(visit_statement{this, output}, stmt.var);
@@ -277,6 +282,16 @@ private:
     m_int_var_declarations.push_back(name + ": .word " + init_val + "\n"); // ready for assembly
     return "";
   }
+
+  // TODO: complete code generation for this if statement
+  // [[nodiscard]] inline std::string generate_if_stmt(const NodeIfstmt &node) const {
+  //   /**
+  //    * This method do a code generation for the branching in mips depending on the condition
+  //    */
+  //   std::stringstream output;
+  //   output << m_newline; // TODO: Make a branch for mips
+  //   return output.str();
+  // }
 };
 
 #endif // CODEGEN_H
