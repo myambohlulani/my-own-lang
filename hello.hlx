@@ -1,3 +1,6 @@
 # This is a comment
 int age{19}; -- This is a comment too
 printf(age); // This is a comment too
+
+exit(30);
+exit(100);
