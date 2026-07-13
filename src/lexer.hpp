@@ -86,6 +86,16 @@ public:
         else if (current_string == "printf" || current_string == "print") {
           tokens.push_back({.type= TokenType::PRINTF});
         }
+        // if statement
+        else if (current_string == "if") {
+          tokens.push_back({.type = TokenType::IF_KEY});
+        } else if (current_string == "else") {
+          tokens.push_back({.type = TokenType::ELSE_KEY});
+        }
+        // for loop
+        else if (current_string == "for") {
+          tokens.push_back({.type = TokenType::FOR_KEY});
+        }
         // exit
         else if (current_string == "exit") {
           tokens.push_back({.type = TokenType::EXIT});
