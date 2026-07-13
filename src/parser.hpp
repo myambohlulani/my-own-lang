@@ -293,6 +293,27 @@ private:
 
     return {};
   }
+
+  // inline std::optional<NodeIfstmt> parse_if_stament() {
+  //   /**
+  //    * This method tries to parse the if statement
+  //    */
+  //   // TODO: complete this and make it work
+  //   std::optional<NodeIfstmt> if_stmt;
+  //
+  //   if (peek().has_value() && peek().value().type == TokenType::IF_KEY) {
+  //     if (peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+  //       consume();
+  //       consume();
+  //       // parse what is within the statement
+  //       if (peek().has_value() && peek().value().type == TokenType::BOOL_LIT && (peek().value().value == "true" || peek().value().value == "false")) {
+  //         return NodeIfstmt{.var = consume()}; // taking that true or false
+  //       }
+  //     }
+  //   }
+  //
+  //   return if_stmt;
+  // }
 };
 
 #endif // PARSER_H
