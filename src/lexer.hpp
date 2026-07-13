@@ -2,7 +2,6 @@
 #define LEXER_H
 #include <iostream>
 #include <optional>
-#include <stdatomic.h>
 #include <vector>
 
 enum class TokenType {
