@@ -1,0 +1,27 @@
+int age{19};
+
+for(int i = 0; i < age; i++} {
+	print(i);
+}
+
+// mips + linux
+// bneq $t0, $t1, loop1
+// loop1:
+// li $v0, 4003
+// li $a0, 1
+// move $a1, $t0
+// syscall
+// addi $t0, $t0, 1
+//j loop1
+
+// x86-assembly
+// mov rcx, 0 ; i = 0
+//.loop:
+//		cmp rcx, [age]
+//		jge .done ; if i >= 5 exit loop
+// 		inc rcx ; i++
+//		jmp .loop
+// .done:
+//	mov rax, 60
+// xro, rdi, rdi
+// syscall
