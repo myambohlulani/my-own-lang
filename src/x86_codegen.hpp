@@ -100,7 +100,13 @@ private:
    */
   [[nodiscard]] inline std::string generate_printf(const NodePrintf &node) const {
     std::stringstream output;
-    output << "printf"; //TODO: Implement generate printf
+    //TODO: Implement generate printf
+    return output.str();
+  }
+
+  [[nodiscard]] inline std::string generate_print_int() const {
+    std::stringstream output;
+
     return output.str();
   }
 };
