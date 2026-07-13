@@ -237,7 +237,26 @@ private:
   }
 
   inline void pass_comment() {
+    /**
+     * This method lexers a comment
+     */
+    if ((peek() == '/' && peek(1).has_value() && peek(1).value() == '/') || (peek() == '-' && peek(1).has_value() && peek(1).value() == '-') || peek() == '#') {
+      while (peek().has_value() && peek().value() != '\n') {
+        consume();
+      }
+    }
 
+    // TODO: Multiple line comments but on beta tes
+    if (peek().has_value() && peek().value() == '/' && peek(1).has_value() && peek(1).value() == '*') {
+      consume(); // consume /
+      consume(); // *
+      while (peek().has_value() && peek().value() != '*' && peek(1).has_value() && peek(1).value() != '/') {
+        consume();
+      }
+    } else {
+      std::cerr << "Can't lexer the multiple line comment" << std::endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   inline Token tokenize_integer() {
