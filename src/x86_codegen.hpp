@@ -25,7 +25,8 @@ public:
   [[nodiscard]] inline std::string generate() const {
     std::stringstream output;
     // Generating the first part of the code
-    output << m_global;
+    output << EXTERNAL_C_FUNCTIONS;
+    output << GLOBAL_SECTION;
     // for exit
     bool has_exit = false;
 
@@ -53,15 +54,15 @@ private:
   [[nodiscard]] inline std::string generate_exit(const NodeExit &node) const {
     std::stringstream output;
     const auto &exit_stmt = std::get<NodeLiteral>(node.expr.value);
-    output << "   mov rax, 60\n";
+    output << EXIT_STATUS_CODE;
 
     if (exit_stmt.int_lit.value.has_value())
       output << "   mov rdi, " << exit_stmt.int_lit.value.value() << "\n";
     else {
-      output << "   mov rdi, " << 0 << "\n";
+      output << SUCCESS_STATUS_CODE;
     }
 
-    output << m_syscall;
+    output << SYSTEM_CALL_;
     return output.str();
   }
 
@@ -70,10 +71,9 @@ private:
    */
   [[nodiscard]] inline std::string generate_default_exit() const {
     std::stringstream output;
-    output << "   mov rax, 60\n";
-    output << "   mov rdi, 0\n";
-    // output << m_int80h;
-    output << m_syscall;
+    output << EXIT_STATUS_CODE;
+    output << SUCCESS_STATUS_CODE;
+    output << SYSTEM_CALL_;
     return output.str();
   }
 
