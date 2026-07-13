@@ -78,21 +78,15 @@ public:
       // space
       else if  (std::isspace(curr_char)) {
         consume();
-        if (peek().has_value()) {
-          std::string curr{};
-          while (peek().has_value() && peek().value() != '"') {
-            curr.push_back(consume());
-          }
-
-          // consume the close string value
-          if (peek().has_value() && peek().value() == '"') {
-            consume();
-          }
-
-          tokens.push_back({.type = TokenType::STRING_LIT, .value = curr});
-        }
       }
-      // symbols
+      // string
+      else if (curr_char == '"') {
+        tokens.push_back(tokenize_string());
+      }
+      // starts with // or # or -- for comments
+      else if (is_comment(curr_char)) {
+        pass_comment();
+      } // symbols
       else if (curr_char == '{') {
         tokens.push_back({.type = TokenType::OP_CURLY});
         consume();
@@ -105,22 +99,17 @@ public:
       } else if (curr_char == ')') {
         tokens.push_back({.type = TokenType::CL_PAREN});
         consume();
-      }
-      // comments
-      else if ((curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') ||
-              (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-') ||
-              curr_char == '#') {
-        while (peek().has_value() && peek().value() != '\n') {
-          consume();
-        }
+      } else if (curr_char == ';') {
+        tokens.push_back({.type = TokenType::SEMICOLON});
+        consume(); // consume
+        // std::cout << "Semicolon" << std::endl; // for debugging
       } else {
         std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
         consume(); // consume to avoid infinite loop
       }
     }
-
-    m_curr_index = 0;
-    return tokens;
+      m_curr_index = 0;
+      return tokens;
   }
 
 private:
