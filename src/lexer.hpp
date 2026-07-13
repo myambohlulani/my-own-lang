@@ -237,6 +237,16 @@ private:
     } else if (current_string == "printf" || current_string == "print") {
       return {.type = TokenType::PRINTF, .value = current_string};
     }
+    else if (current_string == "bool") {
+      return {.type = TokenType::BOOL_KEY, .value = current_string};
+    }
+    else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
+      return {.type = TokenType::BOOL_LIT, .value = current_string};
+    } else if (current_string == "int") {
+      return {.type = TokenType::INT_KEY, .value = current_string};
+    } else if (current_string == "string" || current_string == "String") {
+      return {.type = TokenType::STRING_KEY, .value = current_string};
+    }
 
     return {.type = TokenType::IDENTIFIER, .value = current_string};
   }
