@@ -285,6 +285,22 @@ private:
       current_string.push_back(consume());
     }
 
+    if (current_string == "exit") {
+      return {.type = TokenType::EXIT};
+    } else if (current_string == "if") {
+      return {.type = TokenType::IF_KEY};
+    } else if (current_string == "else") {
+      return {.type = TokenType::ELSE_KEY};
+    } else if (current_string == "while") {
+      return {.type = TokenType::WHILE_KEY};
+    } else if (current_string == "for") {
+      return {.type = TokenType::FOR_KEY};
+    } else if (current_string == "return") {
+      return {.type = TokenType::RETURN};
+    } else if (current_string == "printf" || current_string == "print") {
+      return {.type = TokenType::PRINTF, .value = current_string};
+    }
+
     return {.type = TokenType::IDENTIFIER, .value = current_string};
   }
 };
