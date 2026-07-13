@@ -82,74 +82,78 @@ public:
     return program;
   }
 
+private:
+  const std::vector<Token> m_tokens;
+  size_t m_index = 0;
+
   /**
    * This method parses the exit statement
    */
   inline std::optional<NodeExit> parse_exit() {
     std::optional<NodeExit> exit_node {};
-      if (peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
-        consume(); // consume exit
-        consume(); // consume the next open parentheses
+    if (peek().value().type == TokenType::EXIT && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+      consume(); // consume exit
+      consume(); // consume the next open parentheses
 
-        // TODO: check for the value
-        if (const auto node_expr = parse_expr()) {
-          exit_node  = NodeExit {.expr = node_expr.value()};
-        }
-
-        // TODO: Check close paren
-        if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
-          consume();
-        } else {
-          std::cout << "There is no close parentheses in the exit" << std::endl;
-        }
-
-          // TODO: Check semi-colon
-        if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
-          consume();
-        } else {
-          std::cout << "There is no semicolon in the exit" << std::endl;
-          exit(EXIT_FAILURE);
-        }
+      // TODO: check for the value
+      if (const auto node_expr = parse_expr()) {
+        exit_node  = NodeExit {.expr = node_expr.value()};
       }
+
+      // TODO: Check close paren
+      if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
+        consume();
+      } else {
+        std::cout << "There is no close parentheses in the exit" << std::endl;
+      }
+
+      // TODO: Check semi-colon
+      if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
+        consume();
+      } else {
+        std::cout << "There is no semicolon in the exit" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+    }
 
     return exit_node;
   }
 
   /** This method parses the printf statement
-   */
+  */
   inline std::optional<NodePrintf> parse_printf() {
     std::optional <NodePrintf> printf_node {};
-      if (peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
-        consume(); // printf
-        consume(); // (
+    if (peek().value().type == TokenType::PRINTF && peek(1).has_value() && peek(1).value().type == TokenType::OP_PAREN) {
+      consume(); // printf
+      consume(); // (
 
-        if (const auto node_expr = parse_expr()) {
-          printf_node  = NodePrintf {.expr = node_expr.value()};
-        } else if (const auto node_str_expr = parse_string()) {
-          printf_node = NodePrintf {.expr = node_str_expr.value()};
-        } else {
-          std::cerr << "Did you forget to include a string or value inside your print?" << std::endl;
-          exit(EXIT_FAILURE);
-        }
-        // close parentheses
-        if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
-          consume();
-        } else {
-          std::cerr << "There is no close parentheses for your printf" << std::endl;
-          exit(EXIT_FAILURE);
-        }
-
-        if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
-          consume();
-        } else {
-          std::cerr << "There is no semicolon for termination of printf" << std::endl;
-        }
+      if (const auto node_expr = parse_expr()) {
+        printf_node  = NodePrintf {.expr = node_expr.value()};
+      } else if (const auto node_str_expr = parse_string()) {
+        printf_node = NodePrintf {.expr = node_str_expr.value()};
+      } else {
+        std::cerr << "Did you forget to include a string or value inside your print?" << std::endl;
+        exit(EXIT_FAILURE);
       }
+      // close parentheses
+      if (peek().has_value() && peek().value().type == TokenType::CL_PAREN) {
+        consume();
+      } else {
+        std::cerr << "There is no close parentheses for your printf" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+
+      if (peek().has_value() && peek().value().type == TokenType::SEMICOLON) {
+        consume();
+      } else {
+        std::cerr << "There is no semicolon for termination of printf" << std::endl;
+      }
+    }
 
     return printf_node;
   }
 
-  /**
+   /**
    * This method parse the data type
    * /
    */
@@ -214,44 +218,6 @@ public:
   }
 
   /**
-     This method parsers and expression
-   */
-  inline std::optional<NodeExpr> parse_expr() {
-    if (peek().has_value() && (peek().value().type == TokenType::INT_LIT || peek().value().type == TokenType::FLOAT_LIT || peek().value().type == TokenType::DOUBLE_LIT)) {
-      return NodeExpr{.value = NodeLiteral{.int_lit = consume()}};
-    }
-    // for identifier
-    else if (peek().has_value() && peek().value().type == TokenType::IDENTIFIER) {
-      return NodeExpr{.value = NodeIdentExpr{.ident = consume()}};
-    }
-
-    return {};
-  }
-
-  // parsing a string
-  inline std::optional<NodeStr> parse_string() {
-    if (peek().has_value() && peek().value().type == TokenType::STRING_LIT) {
-      return NodeStr{.string_lit = consume()};
-    }
-
-    return {};
-  }
-
-  // This method look for the next token with an offset of 0, can be incremented
-  // by an offset
-  [[nodiscard]] inline std::optional<Token> peek(int offset = 0) const {
-    if (m_index + offset >= m_tokens.size()) {
-      return {};
-    } else {
-      return m_tokens.at(m_index + offset);
-    }
-  }
-  /**
-          This method consumes a token
-  */
-  inline Token consume() { return m_tokens.at(m_index++); }
-
-  /**
    * This method parses the statement, any statement
    */
   inline std::optional<NodeStatement> parse_statement() {
@@ -274,9 +240,44 @@ public:
     return {};
   }
 
-private:
-  const std::vector<Token> m_tokens;
-  size_t m_index = 0;
+  // parsing a string
+  inline std::optional<NodeStr> parse_string() {
+    if (peek().has_value() && peek().value().type == TokenType::STRING_LIT) {
+      return NodeStr{.string_lit = consume()};
+    }
+
+    return {};
+  }
+
+  /**
+        This method consumes a token
+  */
+  inline Token consume() { return m_tokens.at(m_index++); }
+
+  // This method look for the next token with an offset of 0, can be incremented
+  // by an offset
+  [[nodiscard]] inline std::optional<Token> peek(const int &offset = 0) const {
+    if (m_index + offset >= m_tokens.size()) {
+      return {};
+    } else {
+      return m_tokens.at(m_index + offset);
+    }
+  }
+
+  /**
+   This method parsers and expression
+ */
+  inline std::optional<NodeExpr> parse_expr() {
+    if (peek().has_value() && (peek().value().type == TokenType::INT_LIT || peek().value().type == TokenType::FLOAT_LIT || peek().value().type == TokenType::DOUBLE_LIT)) {
+      return NodeExpr{.value = NodeLiteral{.int_lit = consume()}};
+    }
+    // for identifier
+    else if (peek().has_value() && peek().value().type == TokenType::IDENTIFIER) {
+      return NodeExpr{.value = NodeIdentExpr{.ident = consume()}};
+    }
+
+    return {};
+  }
 };
 
 #endif // PARSER_H
