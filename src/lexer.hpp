@@ -303,6 +303,21 @@ private:
 
     return {.type = TokenType::IDENTIFIER, .value = current_string};
   }
+
+  [[nodiscard]] inline bool is_comment(const char &curr_char) const {
+    /**
+     * This method checks if it is the start of the comment
+     */
+    if (curr_char == '#') {
+      return true;
+    }
+
+    if (const auto &next_char = peek(1); (next_char == '/' && curr_char == '/') || (curr_char == '-' && next_char == '-') ) {
+      return true;
+    }
+
+    return false;
+  }
 };
 
 #endif // LEXER_H
