@@ -47,9 +47,6 @@ public:
 
 private:
   NodeProgram m_root{};
-  // std::string m_int80h =  "   int 80h\n";
-  std::string m_syscall = "   syscall\n";
-  std::string m_global = "global _start\n_start:\n";
 
   [[nodiscard]] inline static std::string generate_exit(const NodeExit &node) {
     /**
