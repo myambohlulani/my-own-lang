@@ -200,7 +200,38 @@ private:
   }
 
   inline Token tokenize_string() {
+    std::string current_string{};
+  }
 
+  inline Token tokenize_boolean() {
+    std::string current_string{};
+  }
+
+  inline void pass_comment() {
+
+  }
+
+  inline Token tokenize_integer() {
+    std::string current_string{};
+
+
+    return {.type = TokenType::INT_LIT, .value = current_string};
+  }
+
+  inline Token tokenize_identifier() {
+    /**
+     * This method tokenize the identifier
+     */
+    std::string current_string{};
+    if (peek().has_value() && std::isalpha(peek().value())) {
+      current_string.push_back(consume());
+    }
+
+    while (peek().has_value() && (std::isalnum(peek().value()) || peek().value() == '_')) {
+      current_string.push_back(consume());
+    }
+
+    return {.type = TokenType::IDENTIFIER, .value = current_string};
   }
 };
 
