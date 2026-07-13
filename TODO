@@ -1,2 +1,7 @@
 Allow one creation of variables, flag error if more than one are created.
-Add comments for single line
+DONE: Add comments for single line
+
+TODO: ensure that multiple line comments are supported
+TODO: ensure that arithmetic is supported too
+TODO: Ensure that if statements are supported too
+TODO: Ensure that a for loop is supported
