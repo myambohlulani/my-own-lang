@@ -1,7 +1,9 @@
 #ifndef LEXER_H
 #define LEXER_H
+#include <algorithm>
 #include <iostream>
 #include <optional>
+#include <ranges>
 #include <vector>
 
 enum class TokenType {
@@ -242,6 +244,7 @@ private:
       return {.type = TokenType::BOOL_KEY, .value = current_string};
     }
     else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
+      std::ranges::transform(current_string, current_string.end(), ::tolower); // converting a string into lower cases regardless of whether it is in upper or not
       return {.type = TokenType::BOOL_LIT, .value = current_string};
     } else if (current_string == "int") {
       return {.type = TokenType::INT_KEY, .value = current_string};
