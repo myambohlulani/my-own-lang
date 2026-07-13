@@ -1,0 +1,9 @@
+-- This is a comment
+printf("Hello, World!");
+# This is a comment too
+print("Hello, Hlulani");
+// Og comment cannot be left too haha
+print(100); -- i will print 100
+printf(190); // i will print 190
+printf("Hello, This is radium"); # I will print the message buddy
+printf("Hello, 1990"); -- welcome to my language
