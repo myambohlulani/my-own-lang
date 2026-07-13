@@ -44,8 +44,15 @@ private:
 
   [[nodiscard]] inline std::string generate_exit(const NodeExit &node) const {
     std::stringstream output;
+    const auto &exit_stmt = std::get<NodeLiteral>(node.expr.value);
+    output << "   mov rax, 60\n";
 
-    // output << m_int80h << std::endl;
+    if (exit_stmt.int_lit.value.has_value())
+      output << "   mov rdi, " << exit_stmt.int_lit.value.value() << "\n";
+    else {
+      output << "   mov rdi, " << 0 << "\n";
+    }
+
     output << m_syscall;
     return output.str();
   }
