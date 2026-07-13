@@ -62,10 +62,10 @@ struct NodeProgram {
 };
 
 class Parser {
-  /**
-          Works similar to the Lexer,but goes through each and every token
-     instead of char
-  */
+/**
+        Works similar to the Lexer,but goes through each and every token
+   instead of char
+*/
 public:
   inline explicit Parser(const std::vector<Token> &tokens) : m_tokens(tokens) {}
 
@@ -78,6 +78,8 @@ public:
     while (peek().has_value()) {
       if (const auto statement = parse_statement()) {
         program.statements.push_back(statement.value());
+      } else if (peek().value().type == TokenType::END_OF_FILE) {
+        break; // reached the end so stop
       } else {
         std::cerr << "These statements are invalid" << std::endl;
         exit(EXIT_FAILURE);
