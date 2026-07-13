@@ -85,7 +85,7 @@ public:
       }
       // starts with // or # or -- for comments
       else if (is_comment(curr_char)) {
-        pass_comment();
+        pass_comment(curr_char);
       } // symbols
       else if (curr_char == '{') {
         tokens.push_back({.type = TokenType::OP_CURLY});
@@ -170,27 +170,29 @@ private:
     }
   }
 
-  inline void pass_comment() {
+  inline void pass_comment(const char &curr_char){
     /**
      * This method lexers a comment
      */
-    if ((peek() == '/' && peek(1).has_value() && peek(1).value() == '/') || (peek() == '-' && peek(1).has_value() && peek(1).value() == '-') || peek() == '#') {
+
+    if (curr_char == '#') {
       while (peek().has_value() && peek().value() != '\n') {
         consume();
       }
-    }
-
-    // TODO: Multiple line comments but on beta tes
-    if (peek().has_value() && peek().value() == '/' && peek(1).has_value() && peek(1).value() == '*') {
-      consume(); // consume /
-      consume(); // *
-      while (peek().has_value() && peek().value() != '*' && peek(1).has_value() && peek(1).value() != '/') {
+    } else if (curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') {
+      while (peek().has_value() && peek().value() != '\n') {
+        consume();
+      }
+    } else if (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-') {
+      while (peek().has_value() && peek().value() != '\n') {
         consume();
       }
     } else {
-      std::cerr << "Can't lexer the multiple line comment" << std::endl;
+      std::cerr << "Comments aren't being lexered haha:-)" << std::endl;
       exit(EXIT_FAILURE);
     }
+
+    // TODO: Multiple line comments
   }
 
   inline Token tokenize_integer() {
