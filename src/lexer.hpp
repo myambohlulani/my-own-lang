@@ -271,15 +271,16 @@ private:
     return {.type = TokenType::INT_LIT, .value = current_string};
   }
 
-  inline Token tokenize_identifier() {
+  inline Token tokenize_word() {
     /**
-     * This method tokenize the identifier
+     * This method tokenize the words
      */
     std::string current_string{};
     if (peek().has_value() && std::isalpha(peek().value())) {
       current_string.push_back(consume());
     }
 
+    // for identifier or keywords
     while (peek().has_value() && (std::isalnum(peek().value()) || peek().value() == '_')) {
       current_string.push_back(consume());
     }
