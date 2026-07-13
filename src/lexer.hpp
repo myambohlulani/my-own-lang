@@ -200,7 +200,21 @@ private:
   }
 
   inline Token tokenize_string() {
+    /**
+     * This method is tokenizing a string only
+     */
+
     std::string current_string{};
+    // pass the first quote
+    consume();
+
+    // pushing everything even the symbols
+    while (peek().has_value()) {
+      current_string.push_back(consume());
+    }
+
+    // consume the last quote
+    return {.type=TokenType::STRING_LIT, .value = current_string};
   }
 
   inline Token tokenize_boolean() {
