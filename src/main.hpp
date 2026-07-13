@@ -49,6 +49,11 @@ inline std::filesystem::path derive_output_path(const std::string& source_path) 
 
 inline void write_contents_into_a_file(const std::string &contents, const std::optional<std::string> &output_path = std::nullopt,
 const std::optional<std::string> &source_path = std::nullopt) {
+  /**
+   * This function write the generated code into a file
+   * given: contents and 2 optional paths, the default path is ./bin/out.asm for mips
+   * and default for nasm is ./bin/out.s
+   */
 
   std::filesystem::path p;
 
@@ -71,6 +76,9 @@ const std::optional<std::string> &source_path = std::nullopt) {
   }
 
   file << contents;
+
+  // compiling the nasm generated file
+  system("nasm -f elf64 ./bin/out.s -o ./bin/app.o && ld ./bin/app.o -o ./bin/app");
 }
 
 #endif // MAIN_H
