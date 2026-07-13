@@ -67,70 +67,16 @@ public:
     std::vector<Token> tokens{};
 
     while (peek().has_value()) {
-      if (char curr_char = peek().value(); std::isalpha(curr_char)) {
-        current_string.push_back(consume());
-
-        while (peek().has_value() && (std::isalnum(peek().value()) || peek().value() == '_')) {
-          current_string.push_back(consume());
-        }
-
-        // data types
-        if (current_string == "int") {
-          tokens.push_back({.type = TokenType::INT_KEY});
-        } else if (current_string == "string") {
-          tokens.push_back({.type = TokenType::STRING_KEY});
-        } else if (current_string == "float") {
-          tokens.push_back({.type = TokenType::FLOAT_KEY});
-        } else if (current_string == "double") {
-          tokens.push_back({.type = TokenType::DOUBLE_KEY});
-        }
-        // boolean
-         else if (current_string == "bool") {
-             tokens.push_back({.type = TokenType::BOOL_KEY});
-        }
-        //printf or print both perform the same function
-        else if (current_string == "printf" || current_string == "print") {
-          tokens.push_back({.type= TokenType::PRINTF});
-        }
-        // if statement
-        else if (current_string == "if") {
-          tokens.push_back({.type = TokenType::IF_KEY});
-        } else if (current_string == "else") {
-          tokens.push_back({.type = TokenType::ELSE_KEY});
-        }
-        // for loop
-        else if (current_string == "for") {
-          tokens.push_back({.type = TokenType::FOR_KEY});
-        }
-        // exit
-        else if (current_string == "exit") {
-          tokens.push_back({.type = TokenType::EXIT});
-        } else {
-          tokens.push_back({.type=TokenType::IDENTIFIER, .value = current_string});
-        }
-
-        current_string.clear(); // clearing the string
-      } else if (std::isdigit(curr_char)) {
-        current_string.push_back(consume());
-
-        while (peek().has_value() &&
-               std::isdigit(peek().value())) {
-          current_string.push_back(consume());
-        }
-
-        // debugging
-        // std::cout << current_string << std::endl;
-
-        tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
-        current_string.clear();
-      } else if (std::isspace(curr_char)) {
-        consume();
-        continue;
-      } else if (curr_char == ';') {
-        tokens.push_back({.type = TokenType::SEMICOLON});
-        consume(); // consume
-        // std::cout << "Semicolon" << std::endl; // for debugging
-      } else if (curr_char == '"') {
+      // starts with alphabet
+      if (const char curr_char = peek().value(); std::isalpha(curr_char)) {
+        tokens.push_back(tokenize_word());
+      }
+      // value
+      else if (std::isdigit(curr_char)) {
+        tokens.push_back(tokenize_integer());
+      }
+      // space
+      else if  (std::isspace(curr_char)) {
         consume();
         if (peek().has_value()) {
           std::string curr{};
