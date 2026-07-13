@@ -1,0 +1,15 @@
+# printf("Hello, World!");
+
+// control flow 01 testing true
+if(true) {
+    print("Hello, World\nIt is printing correct results");
+} else {
+    printf("Hello, Hlulani, This was not supposed to be printed");
+}
+
+// control flow 2: testing false
+if(false) {
+    printf("This is supposed to be skipped!!");
+else {
+    print("Coding is nice!");
+}
