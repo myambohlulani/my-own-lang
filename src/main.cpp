@@ -2,6 +2,7 @@
 #include "./codegen.hpp"
 #include "./lexer.hpp"
 #include "./parser.hpp"
+#include "./x86_codegen.hpp"
 #include <fstream>
 #include <iostream>
 
@@ -93,13 +94,30 @@ int main(int argc, char *argv[]) {
       const Generator gen(tree.value()); // TODO: Change this
       const Generator *generator = &gen;
 
-      // generating the code
-      const std::string strs = generator-> generate();
-      if (strs.empty()) {
+      // generating the code into mips
+      const std::string output_for_mips = generator-> generate();
+
+      // TODO instead of login failure, i want to log success and make sure that the assembly code representation is generated for exit
+      if (output_for_mips.empty()) {
         exit(EXIT_FAILURE);
       }
 
-      write_contents_into_a_file(strs);
+      // writing for mips
+      write_contents_into_a_file(output_for_mips);
+
+      // generating code into x86 assembly
+      const CodeGenerator cod(tree.value());
+      const CodeGenerator *codegen = &cod;
+
+      const std::string output_for_x86 = codegen -> generate();
+
+      if (output_for_x86.empty()) {
+        exit(EXIT_FAILURE);
+      }
+
+      // writing for x86
+      std::string default_output_path = "./bin/out.s";
+      write_contents_into_a_file(output_for_x86, default_output_path, filename);
     }
   }
   else {
