@@ -2,6 +2,6 @@
 #!/usr/bin/env cmake
 
 rm -rf build/
-cmake -S . -B build
+cmake -S . -B build -G Ninja
 cmake --build build/
 
