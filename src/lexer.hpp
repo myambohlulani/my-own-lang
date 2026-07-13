@@ -241,7 +241,14 @@ private:
   }
 
   inline Token tokenize_integer() {
+    /**
+     * This method lexers the integers only not float or what's so ever
+     */
     std::string current_string{};
+
+    while (peek().has_value() && std::isdigit(peek().value())) {
+      current_string.push_back(consume());
+    }
 
     return {.type = TokenType::INT_LIT, .value = current_string};
   }
