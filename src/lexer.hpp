@@ -49,7 +49,7 @@ enum class TokenType {
 
   // termination of the line
   SEMICOLON,
-  END_OF_LINE
+  END_OF_FILE
 };
 
 typedef struct Token {
@@ -108,6 +108,7 @@ public:
         consume(); // consume to avoid infinite loop
       }
     }
+      tokens.push_back({.type = TokenType::END_OF_FILE}); // reached the end
       m_curr_index = 0;
       return tokens;
   }
