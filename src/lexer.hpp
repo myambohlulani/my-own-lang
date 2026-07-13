@@ -25,6 +25,7 @@ enum class TokenType {
   STRING_KEY,
   FLOAT_KEY,
   DOUBLE_KEY,
+  BOOL_KEY,
 
   // Symbols
   OP_PAREN,
@@ -37,6 +38,7 @@ enum class TokenType {
   STRING_LIT,
   FLOAT_LIT,
   DOUBLE_LIT,
+  BOOL_LIT,
 
   // functions
   RETURN,
@@ -64,12 +66,12 @@ public:
     std::string current_string{};
     std::vector<Token> tokens{};
 
-    while (look_next_character().has_value()) {
-      if (char curr_char = look_next_character().value(); std::isalpha(curr_char)) {
-        current_string.push_back(pass_curr_char());
+    while (peek().has_value()) {
+      if (char curr_char = peek().value(); std::isalpha(curr_char)) {
+        current_string.push_back(consume());
 
-        while (look_next_character().has_value() && (std::isalnum(look_next_character().value()) || look_next_character().value() == '_')) {
-          current_string.push_back(pass_curr_char());
+        while (peek().has_value() && (std::isalnum(peek().value()) || peek().value() == '_')) {
+          current_string.push_back(consume());
         }
 
         // data types
@@ -81,6 +83,10 @@ public:
           tokens.push_back({.type = TokenType::FLOAT_KEY});
         } else if (current_string == "double") {
           tokens.push_back({.type = TokenType::DOUBLE_KEY});
+        }
+        // boolean
+         else if (current_string == "bool") {
+             tokens.push_back({.type = TokenType::BOOL_KEY});
         }
         //printf or print both perform the same function
         else if (current_string == "printf" || current_string == "print") {
@@ -105,11 +111,11 @@ public:
 
         current_string.clear(); // clearing the string
       } else if (std::isdigit(curr_char)) {
-        current_string.push_back(pass_curr_char());
+        current_string.push_back(consume());
 
-        while (look_next_character().has_value() &&
-               std::isdigit(look_next_character().value())) {
-          current_string.push_back(pass_curr_char());
+        while (peek().has_value() &&
+               std::isdigit(peek().value())) {
+          current_string.push_back(consume());
         }
 
         // debugging
@@ -118,23 +124,23 @@ public:
         tokens.push_back({.type = TokenType::INT_LIT, .value = current_string});
         current_string.clear();
       } else if (std::isspace(curr_char)) {
-        pass_curr_char();
+        consume();
         continue;
       } else if (curr_char == ';') {
         tokens.push_back({.type = TokenType::SEMICOLON});
-        pass_curr_char(); // consume
+        consume(); // consume
         // std::cout << "Semicolon" << std::endl; // for debugging
       } else if (curr_char == '"') {
-        pass_curr_char();
-        if (look_next_character().has_value()) {
+        consume();
+        if (peek().has_value()) {
           std::string curr{};
-          while (look_next_character().has_value() && look_next_character().value() != '"') {
-            curr.push_back(pass_curr_char());
+          while (peek().has_value() && peek().value() != '"') {
+            curr.push_back(consume());
           }
 
           // consume the close string value
-          if (look_next_character().has_value() && look_next_character().value() == '"') {
-            pass_curr_char();
+          if (peek().has_value() && peek().value() == '"') {
+            consume();
           }
 
           tokens.push_back({.type = TokenType::STRING_LIT, .value = curr});
@@ -143,27 +149,27 @@ public:
       // symbols
       else if (curr_char == '{') {
         tokens.push_back({.type = TokenType::OP_CURLY});
-        pass_curr_char();
+        consume();
       } else if (curr_char == '}') {
         tokens.push_back({.type = TokenType::CL_CURLY});
-        pass_curr_char();
+        consume();
       } else if (curr_char == '(') {
         tokens.push_back({.type = TokenType::OP_PAREN});
-        pass_curr_char();
+        consume();
       } else if (curr_char == ')') {
         tokens.push_back({.type = TokenType::CL_PAREN});
-        pass_curr_char();
+        consume();
       }
       // comments
-      else if ((curr_char == '/' && look_next_character(1).has_value() && look_next_character(1).value() == '/') ||
-              (curr_char == '-' && look_next_character(1).has_value() && look_next_character(1).value() == '-') ||
+      else if ((curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') ||
+              (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-') ||
               curr_char == '#') {
-        while (look_next_character().has_value() && look_next_character().value() != '\n') {
-          pass_curr_char();
+        while (peek().has_value() && peek().value() != '\n') {
+          consume();
         }
       } else {
         std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
-        pass_curr_char(); // consume to avoid infinite loop
+        consume(); // consume to avoid infinite loop
       }
     }
 
@@ -175,22 +181,26 @@ private:
   const std::string m_str;
   int m_curr_index = 0;
 
-  [[nodiscard]] inline std::optional<char> look_next_character(const int &ahead = 0) const {
+  [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const {
     /**
-            This method peaks characters ahead, 1 is for default and you can
+            This method peaks characters ahead, 0 is for default and you can
        specify the offset It does not change the contents of the class hence
        const and no-discard, This is same as peek in other compilers
     */
-    if (m_curr_index + ahead >= m_str.size()) {
+    if (m_curr_index + offset >= m_str.size()) {
       return {};
     } else {
-      return m_str.at(m_curr_index + ahead);
+      return m_str.at(m_curr_index + offset);
     }
   }
 
-  char pass_curr_char() {
+  inline char consume() {
     // This is similar to consume
     return m_str.at(m_curr_index++);
+  }
+
+  inline Token tokenize_string() {
+
   }
 };
 
