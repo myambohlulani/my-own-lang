@@ -2,6 +2,7 @@
 #define LEXER_H
 #include <iostream>
 #include <optional>
+#include <stdatomic.h>
 #include <vector>
 
 enum class TokenType {
@@ -218,7 +219,21 @@ private:
   }
 
   inline Token tokenize_boolean() {
+    /**
+     * This method parses the boolean - true or false
+     */
     std::string current_string{};
+
+    while (peek().has_value() && std::isalpha(peek().value())) {
+      current_string.push_back(consume());
+    }
+
+    if (current_string == "true" || current_string == "false" || current_string == "False" || current_string == "True") {
+      return {.type = TokenType::BOOL_KEY, .value = current_string};
+    } else {
+      std::cerr << "The value stored in <bool> type is not compatible with it. change the value stored inside." << std::endl;
+      exit(EXIT_FAILURE);
+    }
   }
 
   inline void pass_comment() {
@@ -227,7 +242,6 @@ private:
 
   inline Token tokenize_integer() {
     std::string current_string{};
-
 
     return {.type = TokenType::INT_LIT, .value = current_string};
   }
