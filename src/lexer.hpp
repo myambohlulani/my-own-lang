@@ -2,9 +2,26 @@
 #define LEXER_H
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <optional>
 #include <ranges>
 #include <vector>
+
+// Macros for arithmetic symbols
+#define PLUS '+'
+#define MINUS '-'
+#define MULTIPLY '*'
+#define DIVIDE '/'
+#define EQUALS '='
+#define MODULUS '%'
+
+// Symbols
+#define OPEN_CURLY '{'
+#define CLOSE_CURLY '}'
+#define OPEN_PAREN '('
+#define CLOSE_PAREN ')'
+#define SEMICOLON_ ';'
+#define DOUBLE_QUOTE '"'
 
 enum class TokenType {
   IDENTIFIER,
