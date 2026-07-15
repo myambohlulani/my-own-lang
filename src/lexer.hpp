@@ -32,12 +32,14 @@ enum class TokenType {
   WHILE_KEY,
   FOR_KEY,
 
-  // operators
+  // Arithmetic operators
   EQUALS_OP,
   PLUS_OP,
   DIVIDE_OP,
   MINUS_OP,
   MULT_OP,
+  MOD_OP,
+  EQUALITY_OP,
 
   // Data types
   INT_KEY,
