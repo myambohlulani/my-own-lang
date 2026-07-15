@@ -96,37 +96,17 @@ public:
       else if (std::isdigit(curr_char)) {
         tokens.push_back(tokenize_integer());
       }
+      // starts with // or # or -- for comments
+      else if (is_comment(curr_char)) {
+        pass_comment(curr_char);
+      }
       // space
       else if  (std::isspace(curr_char)) {
         consume();
       }
-      // string
-      else if (curr_char == '"') {
-        tokens.push_back(tokenize_string());
-      }
-      // starts with // or # or -- for comments
-      else if (is_comment(curr_char)) {
-        pass_comment(curr_char);
-      } // symbols
-      else if (curr_char == '{') {
-        tokens.push_back({.type = TokenType::OP_CURLY});
-        consume();
-      } else if (curr_char == '}') {
-        tokens.push_back({.type = TokenType::CL_CURLY});
-        consume();
-      } else if (curr_char == '(') {
-        tokens.push_back({.type = TokenType::OP_PAREN});
-        consume();
-      } else if (curr_char == ')') {
-        tokens.push_back({.type = TokenType::CL_PAREN});
-        consume();
-      } else if (curr_char == ';') {
-        tokens.push_back({.type = TokenType::SEMICOLON});
-        consume(); // consume
-        // std::cout << "Semicolon" << std::endl; // for debugging
-      } else {
-        std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
-        consume(); // consume to avoid infinite loop
+      else {
+        // tokenize known symbols
+        tokenize_symbols(curr_char, tokens);
       }
     }
       tokens.push_back({.type = TokenType::END_OF_FILE}); // reached the end
