@@ -11,12 +11,16 @@
 #include <sstream>
 
 // macros for the constants
-#define DATA_SECTION "section .data\n"
-#define GLOBAL_SECTION "section .text\nglobal _start\n_start:\n";
+#define DATA_SECTION "\nsection .data\n"
+#define GLOBAL_SECTION "\nsection .text\nglobal _start\n_start:\n";
 #define EXIT_STATUS_CODE "   mov rax, 60\n"
 #define SUCCESS_STATUS_CODE "   mov rdi, 0\n"
 #define EXTERNAL_C_FUNCTIONS "extern printf\nextern exit\n"
-#define SYSTEM_CALL_ "   syscall\n"
+#define SYSTEM_CALL_ "   syscall\n\n"
+
+// responsible for pushing and popping from the stack
+#define STACK_POP "   pop"
+#define STACK_PUSH "  push"
 
 class CodeGenerator {
 public:
