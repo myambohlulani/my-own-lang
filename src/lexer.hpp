@@ -129,7 +129,7 @@ private:
 
   [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const {
     /**
-            This method peaks characters ahead, 0 is for default and you can
+       This method peaks characters ahead, 0 is for default and you can
        specify the offset It does not change the contents of the class hence
        const and no-discard, This is same as peek in other compilers
     */
@@ -181,20 +181,11 @@ private:
     }
   }
 
-  inline void pass_comment(const char &curr_char){
+  inline void pass_comment(const char &curr_char) {
     /**
      * This method lexers a comment
      */
-
-    if (curr_char == '#') {
-      while (peek().has_value() && peek().value() != '\n') {
-        consume();
-      }
-    } else if (curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') {
-      while (peek().has_value() && peek().value() != '\n') {
-        consume();
-      }
-    } else if (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-') {
+    if (curr_char == '#' || (curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') || (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-')) {
       while (peek().has_value() && peek().value() != '\n') {
         consume();
       }
@@ -247,11 +238,9 @@ private:
       return {.type = TokenType::RETURN};
     } else if (current_string == "printf" || current_string == "print") {
       return {.type = TokenType::PRINTF, .value = current_string};
-    }
-    else if (current_string == "bool") {
+    } else if (current_string == "bool") {
       return {.type = TokenType::BOOL_KEY, .value = current_string};
-    }
-    else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
+    } else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
       std::ranges::transform(current_string, current_string.end(), ::tolower); // converting a string into lower cases regardless of whether it is in upper or not
       return {.type = TokenType::BOOL_LIT, .value = current_string};
     } else if (current_string == "int") {
