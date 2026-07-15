@@ -2,9 +2,26 @@
 #define LEXER_H
 #include <algorithm>
 #include <iostream>
+#include <map>
 #include <optional>
 #include <ranges>
 #include <vector>
+
+// Macros for arithmetic symbols
+#define PLUS '+'
+#define MINUS '-'
+#define MULTIPLY '*'
+#define DIVIDE '/'
+#define EQUALS '='
+#define MODULUS '%'
+
+// Symbols
+#define OPEN_CURLY '{'
+#define CLOSE_CURLY '}'
+#define OPEN_PAREN '('
+#define CLOSE_PAREN ')'
+#define SEMICOLON_ ';'
+#define DOUBLE_QUOTE '"'
 
 enum class TokenType {
   IDENTIFIER,
@@ -15,12 +32,14 @@ enum class TokenType {
   WHILE_KEY,
   FOR_KEY,
 
-  // operators
+  // Arithmetic operators
   EQUALS_OP,
   PLUS_OP,
   DIVIDE_OP,
   MINUS_OP,
   MULT_OP,
+  MOD_OP,
+  EQUALITY_OP,
 
   // Data types
   INT_KEY,
@@ -77,37 +96,17 @@ public:
       else if (std::isdigit(curr_char)) {
         tokens.push_back(tokenize_integer());
       }
+      // starts with // or # or -- for comments
+      else if (is_comment(curr_char)) {
+        pass_comment(curr_char);
+      }
       // space
       else if  (std::isspace(curr_char)) {
         consume();
       }
-      // string
-      else if (curr_char == '"') {
-        tokens.push_back(tokenize_string());
-      }
-      // starts with // or # or -- for comments
-      else if (is_comment(curr_char)) {
-        pass_comment(curr_char);
-      } // symbols
-      else if (curr_char == '{') {
-        tokens.push_back({.type = TokenType::OP_CURLY});
-        consume();
-      } else if (curr_char == '}') {
-        tokens.push_back({.type = TokenType::CL_CURLY});
-        consume();
-      } else if (curr_char == '(') {
-        tokens.push_back({.type = TokenType::OP_PAREN});
-        consume();
-      } else if (curr_char == ')') {
-        tokens.push_back({.type = TokenType::CL_PAREN});
-        consume();
-      } else if (curr_char == ';') {
-        tokens.push_back({.type = TokenType::SEMICOLON});
-        consume(); // consume
-        // std::cout << "Semicolon" << std::endl; // for debugging
-      } else {
-        std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
-        consume(); // consume to avoid infinite loop
+      else {
+        // tokenize known symbols
+        tokenize_symbols(curr_char, tokens);
       }
     }
       tokens.push_back({.type = TokenType::END_OF_FILE}); // reached the end
@@ -119,9 +118,18 @@ private:
   const std::string m_str;
   int m_curr_index = 0;
 
+  const std::map<char, Token> operators_map = {
+    {'+',{.type = TokenType::PLUS_OP, .value = std::string("+")}},
+    {'-',{.type = TokenType::MINUS_OP, .value = std::string("-")}},
+    {'/',{.type = TokenType::DIVIDE_OP, .value = std::string("/")}},
+    {'%',{.type = TokenType::MOD_OP, .value = std::string("%")}},
+    {'*',{.type = TokenType::MULT_OP, .value = std::string("*")}},
+    {'=', {.type = TokenType::EQUALS_OP, .value = std::string("=")}}
+  };
+
   [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const {
     /**
-            This method peaks characters ahead, 0 is for default and you can
+       This method peaks characters ahead, 0 is for default and you can
        specify the offset It does not change the contents of the class hence
        const and no-discard, This is same as peek in other compilers
     */
@@ -173,20 +181,11 @@ private:
     }
   }
 
-  inline void pass_comment(const char &curr_char){
+  inline void pass_comment(const char &curr_char) {
     /**
      * This method lexers a comment
      */
-
-    if (curr_char == '#') {
-      while (peek().has_value() && peek().value() != '\n') {
-        consume();
-      }
-    } else if (curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') {
-      while (peek().has_value() && peek().value() != '\n') {
-        consume();
-      }
-    } else if (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-') {
+    if (curr_char == '#' || (curr_char == '/' && peek(1).has_value() && peek(1).value() == '/') || (curr_char == '-' && peek(1).has_value() && peek(1).value() == '-')) {
       while (peek().has_value() && peek().value() != '\n') {
         consume();
       }
@@ -239,11 +238,9 @@ private:
       return {.type = TokenType::RETURN};
     } else if (current_string == "printf" || current_string == "print") {
       return {.type = TokenType::PRINTF, .value = current_string};
-    }
-    else if (current_string == "bool") {
+    } else if (current_string == "bool") {
       return {.type = TokenType::BOOL_KEY, .value = current_string};
-    }
-    else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
+    } else if (current_string == "true" || current_string == "false" || current_string == "True" || current_string == "False") {
       std::ranges::transform(current_string, current_string.end(), ::tolower); // converting a string into lower cases regardless of whether it is in upper or not
       return {.type = TokenType::BOOL_LIT, .value = current_string};
     } else if (current_string == "int") {
@@ -268,6 +265,59 @@ private:
     }
 
     return false;
+  }
+
+  inline void tokenize_symbols(const char &curr_char, std::vector<Token> &tokens) {
+    /**
+     * This function tokenizes the symbols
+     */
+    switch(curr_char) {
+      case PLUS:
+      case MODULUS:
+      case MINUS:
+      case MULTIPLY:
+      case DIVIDE:
+        tokens.push_back(operators_map.at(curr_char));
+        consume();
+      break;
+      case OPEN_CURLY:
+        tokens.push_back({.type = TokenType::OP_CURLY});
+        consume();
+      break;
+      case CLOSE_CURLY:
+        tokens.push_back({.type = TokenType::CL_CURLY});
+        consume();
+      break;
+      case OPEN_PAREN:
+        tokens.push_back({.type = TokenType::OP_PAREN});
+        consume();
+      break;
+      case CLOSE_PAREN:
+        tokens.push_back({.type = TokenType::CL_PAREN});
+        consume();
+      break;
+      case EQUALS:
+        consume(); // =
+        // double =
+        if (peek().has_value() && peek().value() == EQUALS) {
+          consume();
+          // tokens.push_back() TODO: Equality operator
+        }
+
+        tokens.push_back(operators_map.at(curr_char));
+      break;
+      case DOUBLE_QUOTE:
+        tokens.push_back(tokenize_string());
+      break;
+      case SEMICOLON_:
+        tokens.push_back({.type = TokenType::SEMICOLON});
+        consume(); // consume
+        // std::cout << "Semicolon" << std::endl; // for debugging
+      break;
+      default:
+        std::cerr << "Hahaha error: symbol \'" << curr_char << "\' has been used in your code hence error." << std::endl; // error for debugging for now
+        consume(); // consume to avoid infinite loop
+    }
   }
 };
 
