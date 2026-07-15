@@ -314,6 +314,32 @@ private:
   //
   //   return if_stmt;
   // }
+
+  [[nodiscard]] inline int binding_power(const TokenType &curr_type) const {
+    /**
+     * This method is responsible for binding power of operands
+     */
+    switch (curr_type) {
+    case TokenType::EQUALS_OP:
+        return 1;
+      break;
+      // binding power for +, -
+    case TokenType::MINUS_OP:
+    case TokenType::PLUS_OP:
+      return 2;
+      break;
+    // binding power of *, % and /
+    case TokenType::MULT_OP:
+    case TokenType::DIVIDE_OP:
+    case TokenType::MOD_OP:
+      return 3;
+      break;
+    default:
+      // binding power of the unknown
+      std::cout << "Try implementing the binding power for current operand" << std::endl;
+      return 0;
+    }
+  }
 };
 
 #endif // PARSER_H
