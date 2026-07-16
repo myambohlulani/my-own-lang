@@ -46,3 +46,11 @@ inline std::optional<char> Lexer::peek(const int &offset) const {
     return m_str.at(m_curr_index + offset);
   }
 }
+
+inline char Lexer::consume() {
+  /**
+   * This method is responsible for passing the current character
+   * It returns the current character and moves to the next character in the lexer
+   */
+  return m_str.at(m_curr_index++);
+}

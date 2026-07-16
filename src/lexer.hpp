@@ -100,10 +100,7 @@ private:
 
   [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const;
 
-  inline char consume() {
-    // This is similar to consume
-    return m_str.at(m_curr_index++);
-  }
+  inline char consume();
 
   inline Token tokenize_string() {
     /**
