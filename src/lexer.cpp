@@ -33,3 +33,16 @@ inline std::vector<Token> Lexer::tokenize() {
   m_curr_index = 0;
   return tokens;
 }
+
+inline std::optional<char> Lexer::peek(const int &offset) const {
+  /**
+       This method peaks characters ahead, 0 is for default and you can
+       specify the offset It does not change the contents of the class hence
+       const and no-discard, This is same as peek in other compilers
+    */
+  if (m_curr_index + offset >= m_str.size()) {
+    return {};
+  } else {
+    return m_str.at(m_curr_index + offset);
+  }
+}

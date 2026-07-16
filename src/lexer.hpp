@@ -98,18 +98,7 @@ private:
     {'=', {.type = TokenType::EQUALS_OP, .value = std::string("=")}}
   };
 
-  [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const {
-    /**
-       This method peaks characters ahead, 0 is for default and you can
-       specify the offset It does not change the contents of the class hence
-       const and no-discard, This is same as peek in other compilers
-    */
-    if (m_curr_index + offset >= m_str.size()) {
-      return {};
-    } else {
-      return m_str.at(m_curr_index + offset);
-    }
-  }
+  [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const;
 
   inline char consume() {
     // This is similar to consume
