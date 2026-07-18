@@ -80,9 +80,9 @@ typedef struct Token {
 class Lexer {
 public:
   // taking a copy of what I pass - string being passed
-  inline explicit Lexer(std::string str) : m_str(std::move(str)) {}
+   explicit Lexer(std::string str) : m_str(std::move(str)) {}
 
-  inline std::vector<Token> tokenize();
+   std::vector<Token> tokenize();
 
 private:
   const std::string m_str;
@@ -97,23 +97,23 @@ private:
     {EQUALS, {.type = TokenType::EQUALS_OP, .value = std::string("=")}}
   };
 
-  [[nodiscard]] inline std::optional<char> peek(const int &offset= 0) const;
+  [[nodiscard]]  std::optional<char> peek(const int &offset= 0) const;
 
-  inline char consume();
+   char consume();
 
-  inline Token tokenize_string();
+   Token tokenize_string();
 
-  inline Token tokenize_boolean();
+   Token tokenize_boolean();
 
-  inline void pass_comment(const char &curr_char);
+   void pass_comment(const char &curr_char);
 
-  inline Token tokenize_integer();
+   Token tokenize_integer();
 
-  inline Token tokenize_word();
+   Token tokenize_word();
 
-  [[nodiscard]] inline bool is_comment(const char &curr_char) const;
+  [[nodiscard]]  bool is_comment(const char &curr_char) const;
 
-  inline void tokenize_symbols(const char &curr_char, std::vector<Token> &tokens);
+   void tokenize_symbols(const char &curr_char, std::vector<Token> &tokens);
 };
 
 #endif // LEXER_H
