@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-inline std::vector<Token> Lexer::tokenize() {
+ std::vector<Token> Lexer::tokenize() {
   /**
    * This is a tokenizer for the file in hand
    */
@@ -39,7 +39,7 @@ inline std::vector<Token> Lexer::tokenize() {
   return tokens;
 }
 
-inline std::optional<char> Lexer::peek(const int &offset) const {
+ std::optional<char> Lexer::peek(const int &offset) const {
   /**
        This method peaks characters ahead, 0 is for default and you can
        specify the offset It does not change the contents of the class hence
@@ -52,7 +52,7 @@ inline std::optional<char> Lexer::peek(const int &offset) const {
   return m_str.at(m_curr_index + offset);
 }
 
-inline char Lexer::consume() {
+ char Lexer::consume() {
   /**
    * This method is responsible for passing the current character
    * It returns the current character and moves to the next character in the lexer
@@ -60,7 +60,7 @@ inline char Lexer::consume() {
   return m_str.at(m_curr_index++);
 }
 
-inline Token Lexer::tokenize_string() {
+ Token Lexer::tokenize_string() {
   /**
    * This method is tokenizing a string only
    */
@@ -78,7 +78,7 @@ inline Token Lexer::tokenize_string() {
   return {.type=TokenType::STRING_LIT, .value = current_string};
 }
 
-inline Token Lexer::tokenize_integer() {
+ Token Lexer::tokenize_integer() {
   /**
    * This method lexers the integers only not float or what's so ever
    */
@@ -91,7 +91,7 @@ inline Token Lexer::tokenize_integer() {
   return {.type = TokenType::INT_LIT, .value = current_string};
 }
 
-inline Token Lexer::tokenize_boolean() {
+ Token Lexer::tokenize_boolean() {
   /**
    * This method parses the boolean - true or false
    */
@@ -109,7 +109,7 @@ inline Token Lexer::tokenize_boolean() {
   }
 }
 
-inline Token Lexer::tokenize_word() {
+ Token Lexer::tokenize_word() {
   /**
    * This method tokenize the words
    */
@@ -152,7 +152,7 @@ inline Token Lexer::tokenize_word() {
 }
 
 
-[[nodiscard]] inline bool Lexer::is_comment(const char &curr_char) const {
+[[nodiscard]]  bool Lexer::is_comment(const char &curr_char) const {
   /**
    * This method checks if it is the start of the comment
    */
@@ -167,7 +167,7 @@ inline Token Lexer::tokenize_word() {
   return false;
 }
 
-inline void Lexer::tokenize_symbols(const char &curr_char, std::vector<Token> &tokens) {
+ void Lexer::tokenize_symbols(const char &curr_char, std::vector<Token> &tokens) {
   /**
    * This function tokenizes the symbols
    */
@@ -219,7 +219,7 @@ inline void Lexer::tokenize_symbols(const char &curr_char, std::vector<Token> &t
   }
 }
 
-inline void Lexer::pass_comment(const char &curr_char) {
+ void Lexer::pass_comment(const char &curr_char) {
   /**
    * This method lexers a comment
    */
