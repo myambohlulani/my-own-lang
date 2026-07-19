@@ -7,7 +7,7 @@
 #include <memory>
 #include <variant>
 
-[[nodiscard]] inline std::optional<NodeProgram> Parser::parse() {
+[[nodiscard]]  std::optional<NodeProgram> Parser::parse() {
   /**
    * This method parse the program as a whole instead of calling the methods one by one but rather all of them depending on the tokens
    */
@@ -27,7 +27,7 @@
   return program;
 }
 
-[[nodiscard]] inline int Parser::binding_power(const TokenType &curr_type) const {
+[[nodiscard]]  int Parser::binding_power(const TokenType &curr_type) const {
   /**
    * This method is responsible for binding power of operands
    */
@@ -51,7 +51,7 @@
 }
 
 
-[[nodiscard]] inline std::optional<Token> Parser::peek(const int &offset) const {
+[[nodiscard]]  std::optional<Token> Parser::peek(const int &offset) const {
   /**
    * This method look for the next token with an offset of 0, can be incremented
    * by an offset
@@ -63,7 +63,7 @@
   }
 }
 
-inline std::optional<NodeVarDeclaration> Parser::parse_variable_declaration() {
+ std::optional<NodeVarDeclaration> Parser::parse_variable_declaration() {
   /**
   * This method parse the data type
   */
@@ -126,7 +126,7 @@ inline std::optional<NodeVarDeclaration> Parser::parse_variable_declaration() {
     return declaration;
 }
 
-inline std::optional<NodeExit> Parser::parse_exit() {
+ std::optional<NodeExit> Parser::parse_exit() {
   /**
    * This method parses the exit statement
    */
@@ -159,7 +159,7 @@ inline std::optional<NodeExit> Parser::parse_exit() {
   return exit_node;
 }
 
-inline std::optional<NodeStatement> Parser::parse_statement() {
+ std::optional<NodeStatement> Parser::parse_statement() {
   /**
    * This method parses the statement, any statement
    */
@@ -183,7 +183,7 @@ inline std::optional<NodeStatement> Parser::parse_statement() {
 }
 
 // parsing a string
-inline std::optional<NodeStr> Parser::parse_string() {
+ std::optional<NodeStr> Parser::parse_string() {
   if (peek().has_value() && peek().value().type == TokenType::STRING_LIT) {
     return NodeStr{.string_lit = consume()};
   }
@@ -191,7 +191,7 @@ inline std::optional<NodeStr> Parser::parse_string() {
   return {};
 }
 
-inline std::optional<NodeExpr> Parser::parse_expr(const int &min_binding_pow) {
+ std::optional<NodeExpr> Parser::parse_expr(const int &min_binding_pow) {
   /**
   * This method parsers and expression
   * Using the Pratt Parsing method
@@ -220,7 +220,7 @@ inline std::optional<NodeExpr> Parser::parse_expr(const int &min_binding_pow) {
   return left;
 }
 
-inline NodeExpr Parser::prefix_parser() {
+ NodeExpr Parser::prefix_parser() {
   /**
    * Implementation of prefix parser -> Pratt Parsing
    */
@@ -243,7 +243,7 @@ inline NodeExpr Parser::prefix_parser() {
   }
 }
 
-inline std::optional<NodePrintf> Parser::parse_printf() {
+ std::optional<NodePrintf> Parser::parse_printf() {
   /**
    * This method parses the printf statement
   */
@@ -252,10 +252,15 @@ inline std::optional<NodePrintf> Parser::parse_printf() {
     consume(); // printf
     consume(); // (
 
-    if (auto node_expr = parse_expr()) {
+    if (peek().has_value() && peek().value().type == TokenType::STRING_LIT) {
+      if (auto node_str_expr = parse_string()) {
+        printf_node = NodePrintf {.expr = std::move(node_str_expr.value())};
+      } else {
+        std::cerr << "Did you forget to include a string or value inside your print?" << std::endl;
+        exit(EXIT_FAILURE);
+      }
+    } else if (auto node_expr = parse_expr()) {
       printf_node  = NodePrintf {.expr = std::move(node_expr.value())};
-    } else if (auto node_str_expr = parse_string()) {
-      printf_node = NodePrintf {.expr = std::move(node_str_expr.value())};
     } else {
       std::cerr << "Did you forget to include a string or value inside your print?" << std::endl;
       exit(EXIT_FAILURE);
@@ -278,7 +283,7 @@ inline std::optional<NodePrintf> Parser::parse_printf() {
   return printf_node;
 }
 
-[[nodiscard]] inline NodeExpr Parser::parse_infix_expr(NodeExpr left, const Token &operand) {
+[[nodiscard]]  NodeExpr Parser::parse_infix_expr(NodeExpr left, const Token &operand) {
   /**
    * This method parses the expr after getting the expr that begins
    */
@@ -299,7 +304,7 @@ inline std::optional<NodePrintf> Parser::parse_printf() {
   };
 }
 
-inline Token Parser::consume() {
+ Token Parser::consume() {
   /**
   * This method consumes a token
   */
