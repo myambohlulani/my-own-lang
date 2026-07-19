@@ -76,8 +76,12 @@ const std::optional<std::string> &source_path = std::nullopt) {
   }
 
   file << contents;
+}
 
-  // compiling the nasm generated file
+inline void assemble_and_link_x86() {
+  /**
+   * This method assembly and link the x86 file generated during code-generation
+   */
   system("nasm -f elf64 ./bin/out.s -o ./bin/app.o && ld ./bin/app.o -o ./bin/app");
 }
 
