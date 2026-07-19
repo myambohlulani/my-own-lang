@@ -73,35 +73,35 @@ public:
     * Works similar to the Lexer,but goes through each and every token
    * instead of char
   */
-  inline explicit Parser(const std::vector<Token> &tokens) : m_tokens(tokens) {}
+   explicit Parser(const std::vector<Token> &tokens) : m_tokens(tokens) {}
 
-  [[nodiscard]] inline std::optional<NodeProgram> parse();
+  [[nodiscard]]  std::optional<NodeProgram> parse();
 
 private:
   const std::vector<Token> m_tokens;
   size_t m_index = 0;
 
-  inline std::optional<NodeExit> parse_exit();
+   std::optional<NodeExit> parse_exit();
 
-  inline Token consume();
+   Token consume();
 
-  inline std::optional<NodePrintf> parse_printf();
+   std::optional<NodePrintf> parse_printf();
 
-  inline std::optional<NodeVarDeclaration> parse_variable_declaration();
+   std::optional<NodeVarDeclaration> parse_variable_declaration();
 
-  inline std::optional<NodeStatement> parse_statement();
+   std::optional<NodeStatement> parse_statement();
 
-  inline std::optional<NodeStr> parse_string();
+   std::optional<NodeStr> parse_string();
 
-  [[nodiscard]] inline std::optional<Token> peek(const int &offset = 0) const;
+  [[nodiscard]]  std::optional<Token> peek(const int &offset = 0) const;
 
-  inline std::optional<NodeExpr> parse_expr(const int &min_binding_pow = 0);
+   std::optional<NodeExpr> parse_expr(const int &min_binding_pow = 0);
 
-  [[nodiscard]] inline NodeExpr parse_infix_expr(NodeExpr left, const Token &operand);
+  [[nodiscard]]  NodeExpr parse_infix_expr(NodeExpr left, const Token &operand);
 
-  [[nodiscard]] inline int binding_power(const TokenType &curr_type) const;
+  [[nodiscard]]  int binding_power(const TokenType &curr_type) const;
 
-   inline NodeExpr prefix_parser();
+    NodeExpr prefix_parser();
 };
 
 #endif // PARSER_H
