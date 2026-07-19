@@ -68,13 +68,18 @@
   std::string current_string{};
   // pass the first quote
   consume();
-
-  // pushing everything even the symbols
-  while (peek().has_value()) {
+  while (peek().has_value() && peek().value() != DOUBLE_QUOTE) {
     current_string.push_back(consume());
   }
 
-  // consume the last quote
+  // consume the closing quote -> guard that i forgot
+  if (peek().has_value() && peek().value() == DOUBLE_QUOTE) {
+    consume();
+  } else {
+    std::cerr << "Add the missing quote in your string." << std::endl;
+    exit(EXIT_FAILURE);
+  }
+
   return {.type=TokenType::STRING_LIT, .value = current_string};
 }
 
