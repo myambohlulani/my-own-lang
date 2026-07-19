@@ -6,7 +6,7 @@
 
 class Generator {
 public:
-  inline explicit Generator(NodeProgram root) : m_root(std::move(root)) {}
+  inline explicit Generator(const NodeProgram &root) : m_root(root) {}
 
   [[nodiscard]] inline std::string generate() const {
     std::stringstream output;
@@ -60,7 +60,7 @@ public:
   }
 
 private:
-  const NodeProgram m_root{};
+  const NodeProgram &m_root;
   const std::string m_start = ".text\n.globl __start\n__start:\n";
   const std::string m_syscall = "		syscall\n";
   const std::string m_data = ".data\n";
@@ -104,7 +104,7 @@ private:
       // TODO: Create if statements and more
 
       // variables declarations
-      void operator()(const NodeVarDeclar &node) const {
+      void operator()(const NodeVarDeclaration &node) const {
         output << gen -> generate_variable_declar(node);
       }
 
@@ -244,7 +244,7 @@ private:
   /**
    * This method generates the code for the variable declaration
    */
-  [[nodiscard]] inline std::string generate_variable_declar(const NodeVarDeclar &node) const {
+  [[nodiscard]] inline std::string generate_variable_declar(const NodeVarDeclaration &node) const {
     const std::string name = node.var_name.value.value();
 
     // creation of strings var
