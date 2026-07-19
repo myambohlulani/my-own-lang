@@ -24,7 +24,7 @@
 
 class CodeGenerator {
 public:
-  inline explicit CodeGenerator(NodeProgram root) : m_root(std::move(root)) {}
+  inline explicit CodeGenerator(const NodeProgram &root) : m_root(root) {}
 
   [[nodiscard]] inline std::string generate() const {
     std::stringstream output;
@@ -50,13 +50,17 @@ public:
   }
 
 private:
-  NodeProgram m_root{};
+  const NodeProgram &m_root;
 
   [[nodiscard]] inline static std::string generate_exit(const NodeExit &node) {
     /**
      * This method generates the exit code for the file
      */
     std::stringstream output;
+    if (!std::holds_alternative<NodeLiteral>(node.expr.value)) {
+      std::cerr << "Haha, The exit is the problem, it will be fixed soon." << std::endl; // TODO: Fix this problem
+      exit(EXIT_FAILURE);
+    }
     const auto &exit_stmt = std::get<NodeLiteral>(node.expr.value);
     output << EXIT_STATUS_CODE;
 
@@ -100,7 +104,7 @@ private:
         output << gen->generate_printf(node);
       }
 
-      void operator()(const NodeVarDeclar &node) const {
+      void operator()(const NodeVarDeclaration &node) const {
         output << gen->generate_variable_declar(node);
       }
     };
@@ -114,7 +118,7 @@ private:
    * This method is responsible for variable declaration in assembly
    */
   [[nodiscard]] inline std::string
-  generate_variable_declar(const NodeVarDeclar &node) const {
+  generate_variable_declar(const NodeVarDeclaration &node) const {
     std::stringstream output;
     // output << "variable declaration"; // TODO: Implement variable declaration
     return output.str();
