@@ -67,6 +67,9 @@ int main(int argc, char *argv[]) {
       // writing for x86
       std::string default_output_path = "./bin/out.s";
       write_contents_into_a_file(output_for_x86, default_output_path, filename);
+
+      // link x86
+      assemble_and_link_x86();
     }
   }
   else {
