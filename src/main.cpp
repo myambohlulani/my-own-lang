@@ -43,7 +43,8 @@ int main(int argc, char *argv[]) {
 
       // TODO instead of login failure, i want to log success and make sure that the assembly code representation is generated for exit
       if (output_for_mips.empty()) {
-        exit(EXIT_FAILURE);
+        write_contents_into_a_file(output_for_mips);
+        exit(EXIT_SUCCESS);
       }
 
       // writing for mips
@@ -55,12 +56,14 @@ int main(int argc, char *argv[]) {
 
       const std::string output_for_x86 = codegen -> generate();
 
-      if (output_for_x86.empty()) {
-        exit(EXIT_FAILURE);
-      }
-
       // writing for x86
       std::string default_output_path = "./bin/out.s";
+      if (output_for_x86.empty()) {
+        // generate default exit if the file is empty
+        write_contents_into_a_file(output_for_x86, default_output_path, filename);
+        exit(EXIT_SUCCESS);
+      }
+
       write_contents_into_a_file(output_for_x86, default_output_path, filename);
 
       // link x86
