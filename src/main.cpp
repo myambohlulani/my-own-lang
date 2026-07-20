@@ -18,11 +18,6 @@ int main(int argc, char *argv[]) {
     if (correct_extension(filename, extension) == EXIT_SUCCESS) {
       std::string contents = read_file_contents(filename); // reading the file
 
-      // did not read anything so it is considered a failure.
-      if ((contents.empty())) {
-        return EXIT_FAILURE;
-      }
-
       // start lexing or converting into tokens
       Lexer lex(std::move(contents));
       Lexer *lexer = &lex;
