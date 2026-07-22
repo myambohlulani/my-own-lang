@@ -45,7 +45,7 @@
     return 3;
   default:
     // binding power of the unknown
-    std::cout << "Try implementing the binding power for current operand" << std::endl;
+    //std::cout << "Try implementing the binding power for current operand" << std::endl;
     return 0;
   }
 }

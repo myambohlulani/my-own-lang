@@ -18,11 +18,6 @@ int main(int argc, char *argv[]) {
     if (correct_extension(filename, extension) == EXIT_SUCCESS) {
       std::string contents = read_file_contents(filename); // reading the file
 
-      // did not read anything so it is considered a failure.
-      if ((contents.empty())) {
-        return EXIT_FAILURE;
-      }
-
       // start lexing or converting into tokens
       Lexer lex(std::move(contents));
       Lexer *lexer = &lex;
@@ -48,7 +43,8 @@ int main(int argc, char *argv[]) {
 
       // TODO instead of login failure, i want to log success and make sure that the assembly code representation is generated for exit
       if (output_for_mips.empty()) {
-        exit(EXIT_FAILURE);
+        write_contents_into_a_file(output_for_mips);
+        exit(EXIT_SUCCESS);
       }
 
       // writing for mips
@@ -60,12 +56,14 @@ int main(int argc, char *argv[]) {
 
       const std::string output_for_x86 = codegen -> generate();
 
-      if (output_for_x86.empty()) {
-        exit(EXIT_FAILURE);
-      }
-
       // writing for x86
       std::string default_output_path = "./bin/out.s";
+      if (output_for_x86.empty()) {
+        // generate default exit if the file is empty
+        write_contents_into_a_file(output_for_x86, default_output_path, filename);
+        exit(EXIT_SUCCESS);
+      }
+
       write_contents_into_a_file(output_for_x86, default_output_path, filename);
 
       // link x86
